@@ -59,6 +59,7 @@ header > button {
     font-family: new-hero, sans-serif;
     font-weight: 600;
     font-style: normal;
+    color: #000;
 }
 
 .logo-container {
@@ -117,7 +118,6 @@ header > button {
     color: #8F7C3C;
     leading-trim: both;
     text-edge: cap;
-    font-family: "New Hero";
     font-size: 14px;
     font-style: normal;
     font-weight: 600;
@@ -153,7 +153,6 @@ header > button {
     color: #000;
     leading-trim: both;
     text-edge: cap;
-    font-family: "New Hero";
     font-size: 18px;
     font-style: normal;
     font-weight: 600;
@@ -179,9 +178,9 @@ header > button {
     gap: 8px;
     flex: 1 0 0;
     border-radius: 40px;
+    font-family: new-hero, sans-serif;
     background: #000;
     color: #fff;
-    font-family: "New Hero";
     font-size: 18px;
     font-style: normal;
     font-weight: 600;
