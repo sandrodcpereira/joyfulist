@@ -76,6 +76,11 @@ document.addEventListener('DOMContentLoaded', function() {
             taskElement.appendChild(checkbox);
             taskElement.appendChild(label);
             tasksContainer.appendChild(taskElement);
+            
+            // Animate in after a delay
+            setTimeout(() => {
+                taskElement.classList.add('visible');
+            }, index * 200);
         });
     }
     
