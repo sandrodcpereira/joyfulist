@@ -1,5 +1,15 @@
-* {box-sizing: border-box;}
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+}
 html {height: 100%}
+
+*:focus-visible {
+    outline: none;
+    outline-offset: 0px;
+    box-shadow: 0px 0px 0px 4px #FFF, 0px 0px 0px 8px #00A88A;
+}
 
 body {
     font-family: new-hero, sans-serif;
@@ -32,6 +42,8 @@ body {
     background-size: 32px 32px;
     background-position: top center;
     overflow: hidden;
+    position: relative;
+
 }
 
 @media (max-width: 440px) {
@@ -53,6 +65,7 @@ header > button {
     justify-content: center;
     align-items: center;
     gap: 8px;
+    font-size: 14px;
     border-radius: 16px;
     background: #FFC500;
     border: none;
@@ -95,7 +108,7 @@ header > button {
     margin: 0;
 }
 
-.main-container {
+.main-container, .about-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -124,7 +137,7 @@ header > button {
     line-height: 28px; /* 200% */
 }
 
-.main-container > .controls > #refresh-btn {
+.main-container > .controls > button {
     border-radius: 24px;
     background: #8F7C3C;
     border: none;
@@ -164,9 +177,57 @@ header > button {
     height: 24px;
 }
 
+.main-container .content {
+    display: flex;
+    padding: 24px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    align-self: stretch;
+    border-bottom: 1px solid rgba(143, 124, 60, 0.10);
+}
+
+.main-container .content:last-child {
+    border-bottom: none;
+}
+
+.content > p {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: new-hero, sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px;
+    margin: 0;
+    text-align: center;
+}
+
+.content > p > span, .content > p > a {
+    color: #70F;
+    font-family: monotalic-narrow, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.main-container.overlay {
+    padding-bottom: 24px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: -600px;
+    transition: bottom .4s cubic-bezier(0, 0, 0.09, 1.01);
+}
+
+.main-container.overlay.active {
+    bottom: 0px;
+}
+
 .main-container > .share {
     width: 100%;
-    padding: 24px;
+    padding: 24px 24px 40px 24px;
 }
 
 .main-container > .share > #share {
@@ -199,85 +260,4 @@ button:hover {
 
 button:active {
     transform: scale(0.95);
-}
-
-/* body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
-}
-
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-.task {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.task.completed {
-    background-color: #e8f5e9;
-    text-decoration: line-through;
-    color: #666;
-}
-
-.task input {
-    margin-right: 10px;
-}
-
-#refresh-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#refresh-btn:hover {
-    background-color: #45a049;
-}
-
-.tasks-container {
-    overflow: hidden;
-}
-
-.task {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: 
-        opacity 0.3s ease-out,
-        transform 0.3s ease-out,
-        background-color 0.2s ease;
-}
-
-.task.visible {
-    opacity: 1;
-    transform: translateY(0);
 }
