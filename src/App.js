@@ -68,10 +68,7 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>Hello world</h1>
-
-      
+    <div>     
 
       {/* Display ConfettiBoom if showConfetti is true */}
       {showConfetti && 
@@ -92,35 +89,34 @@ function App() {
             ]} // Customize the colors of confetti
       />}
 
-      <div class="wrapper">
 
-          <header>
-              <button id="about" onClick={showSheet}>About</button>
+      <header>
+          <button id="about" onClick={showSheet}>About</button>
 
-              <button onClick={handleClick}>Celebrate!</button>
-          </header>
+          <button onClick={handleClick}>Celebrate!</button>
+      </header>
 
-          <div class="logo-container">
-              <h1>Joyfulist</h1>
-              <h2>Your daily dose of joy</h2>
+      <div class="logo-container">
+          <h1>Joyfulist</h1>
+          <h2>Your daily dose of joy</h2>
+      </div>
+
+      <div class="main-container">
+          <div class="controls">
+              <p>Your tasks for today</p>
+              <button id="refresh-btn">Refresh</button>
           </div>
 
-          <div class="main-container">
-              <div class="controls">
-                  <p>Your tasks for today</p>
-                  <button id="refresh-btn">Refresh</button>
-              </div>
+          <div id="tasks-container"></div>
 
-              <div id="tasks-container"></div>
-
-              <div class="share">
-                  <button id="share">Share with your friends</button>
-              </div>
+          <div class="share">
+              <button id="share">Share with your friends</button>
           </div>
-
-        </div>
+      </div>
 
     </div>
+
+    
 
 
 
