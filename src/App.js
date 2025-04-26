@@ -1,50 +1,29 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ConfettiBoom from 'react-confetti-boom';
-import { createBottomSheet } from '@plainsheet/core';
-// import './App.css';
+import { Sheet } from 'react-modal-sheet';
+
 import './style.css';
 
 import './styles/main.scss';
 
 
 
+
 function App() {
+
   // sheet
 
-  const showSheet = () => {
-    const bottomSheet = createBottomSheet({
-  content: `  
-          <div className="content">
-              <img src="/assets/sparkle.png" alt="" style="width: 54px" />
-              <p><span>Joyfulist</span> was created by <a href="https://www.theonboardinglab.com/" target="_blank">Clare</a> and <a href="https://sandro.design" target="_blank">Sandro</a> in hopes to bring a little more joy into your life.</p>
-          </div>
+  const [isOpen, setOpen] = useState(false);
 
-          <div className="content">
-              <img src="/assets/icon.png" alt="" style="width: 54px" />
 
-              <p>Add to your home screen by tapping <span>Share > Add to Home Screen</span> on your phone.</p>
-          </div>
-          <!--div><button id="close-btn">Close</button></div-->
-    `,
-    draggingAnimationTimings: "spring",
-    expandable: false,
-    dragTriggers: [".pbs-content"],
-    backdropColor: "rgba(0, 0, 0, 0.20)",
-    draggingAnimationDuration: 500,
-
-});
-
-    bottomSheet.mount();
-    bottomSheet.open();
-  };
 
 
 
   // confet
   const [showConfetti, setShowConfetti] = useState(false);
 
-  const handleClick = () => {
+  const throwConfet = () => {
     setShowConfetti(true);
     // Reset the confetti after 3 seconds so it doesn't keep showing
     setTimeout(() => {
@@ -76,9 +55,8 @@ function App() {
 
 
       <header>
-          <button id="about" onClick={showSheet}>About</button>
+          <button id="about" onClick={() => setOpen(true)}>About</button>
 
-          <button onClick={handleClick}>Confetti</button>
       </header>
 
       <div className="logo-container">
@@ -86,14 +64,16 @@ function App() {
           <h2>Your daily dose of joy</h2>
       </div>
 
-      <div className="content-container">
-          <div className="controls">
-              <p>Your tasks for today</p>
-              <button id="refresh-btn">Refresh</button>
+      <div className="panel">
+          <div className="header">
+              <p className="caption">At least one a day keeps the streak alive!</p>
+              <button id="refresh-btn">4</button>
           </div>
 
           <div id="tasks">
-            [tasks go here]
+            <p onClick={throwConfet}>Task</p>
+            <p>Task</p>
+            <p>Task</p>
           </div>
 
           <div className="share">
@@ -101,9 +81,46 @@ function App() {
           </div>
       </div>
 
+      <Sheet 
+        isOpen={isOpen} 
+        detent={"content-height"}
+        tweenConfig={{ ease: 'easeOut', duration: 0.4 }}
+        onClose={() => setOpen(false)
+      }>
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content>
+            <div>
+
+              <div className="header">
+                  <p  className="caption">About Joyfulist</p>
+                  <div><button id="close-btn" onClick={() => setOpen(false)}>Close</button></div>
+              </div>
+
+              <div className="content">
+                  <img src="/assets/sparkle.png" alt="" />
+                  <p><span>Joyfulist</span> was created by <a href="https://www.theonboardinglab.com/" target="_blank">Clare</a> and <a href="https://sandro.design" target="_blank">Sandro</a> in hopes to bring a little more joy into your life.</p>
+              </div>
+
+              <div className="content">
+                  <img src="/assets/icon.png" alt="" />
+
+                  <p>Add to your home screen by tapping <span>Share > Add to Home Screen</span> on your phone.</p>
+              </div>
+
+            </div>
+          </Sheet.Content>
+        </Sheet.Container>
+        <Sheet.Backdrop />
+      </Sheet>
     </div>
 
+    /* sheet content 
+
     
+
+
+          */
 
 
 

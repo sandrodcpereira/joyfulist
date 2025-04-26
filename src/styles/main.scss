@@ -14,7 +14,7 @@ $border:    rgba(143, 124, 60, 0.10);
     &:focus-visible {
         outline: none;
         outline-offset: 0px;
-        box-shadow: 0px 0px 0px 4px #FFF, 0px 0px 0px 8px #00A88A;
+        box-shadow: 0px 0px 0px 4px $white, 0px 0px 0px 8px $teal;
     }
 }
 
@@ -33,14 +33,13 @@ body {
     justify-content: center;
     align-items: center;
     gap: 8px;
-    background: #000;
+    background: $black;
     margin: 0;
 
     @media (max-width: 440px) {
         padding: 0;
     }
 }
-
 
 #root {
     display: flex;
@@ -92,6 +91,14 @@ button {
     }
 }
 
+p.caption {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 28px; 
+    color: $secondary;
+}
+
 header {
     display: flex;
     padding: 24px;
@@ -133,7 +140,7 @@ header {
     }
 }
 
-.content-container {
+.panel {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -149,21 +156,14 @@ header {
 
         &:last-child {
             border-bottom: none;
+            padding-bottom: 40px;
         }
     }
 
-    .controls {
+    .header {
         justify-content: space-between;
         align-items: center;
         align-self: stretch;
-
-        p {
-            margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 28px; 
-            color: $secondary;
-        }
 
         button {
             background: $secondary;
@@ -172,7 +172,10 @@ header {
     }
 
     .share {
-        padding-bottom: 40px;
+        display: flex;
+        flex-direction: column;   
+        text-align: center;
+        gap: 8px;     
 
         #share {
             width: 100%;
@@ -190,42 +193,51 @@ header {
     }
 }
 
-.pbs-gap-filler, .pbs-container .pbs-gap-filler {background: $yellow;}
 
-.pbs-container {
-    background: $yellow;
-    border-radius: 32px 32px 0 0;
+/* sheet */
 
-    .pbs-handle-bar {
-        background-color: $secondary;
-    }
+.react-modal-sheet-container {
 
-    &.open {
-        max-width: 440px;  
-        width: 100% !important;
-    }
-
-    .pbs-content-wrapper {
-        > div > div {
-            padding: 24px;
-            text-align: center;
-            border-bottom: 1px solid $border;
-
-            &:last-child {
-                border-bottom: none;
-            }
-
-            p > span, p a {
-                color: $purple;
-                font-family: monotalic-narrow, sans-serif;
-                font-size: 18px;
-                font-weight: 700;
-            }
-        }
-    }
+  background: $yellow !important;
+  border-radius: 32px 32px 0 0 !important;
 }
 
+.react-modal-sheet-drag-indicator {
+    background: $secondary !important;
+}
+.react-modal-sheet-content > div {
 
+    > div {
+        padding: 24px;
+        text-align: center;
+        border-bottom: 1px solid $border;
 
+        &:last-child {
+            border-bottom: none;
+            padding-bottom: 40px;
+        }
 
+        img {width: 54px;}
+
+        p > span, p a {
+            color: $purple;
+            font-family: monotalic-narrow, sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+        }   
+
+        &.header {
+            justify-content: space-between;
+            align-items: center;
+            align-self: stretch;
+            display: flex;
+            padding-top: 0;
+
+            button {
+                color: $white;
+                background-color: $secondary;
+            }
+        }
+    }    
+}
 
