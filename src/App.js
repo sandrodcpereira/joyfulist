@@ -34,23 +34,23 @@ function App() {
   return (
     <div>     
 
-      {/* Display ConfettiBoom if showConfetti is true */}
+      {}
       {showConfetti && 
         <ConfettiBoom 
           mode={'boom'}
-          deg={270}
-          shapeSize={30}
+          x={0.75}
+          y={0.02}
+          deg={120}
+          shapeSize={25}
           spreadDeg={100}
-          particleCount={500} 
-          launchSpeed={1}
-          numBooms={1} // How many booms of confetti you want
-          duration={2} // Duration of each confetti burst in ms
+          particleCount={100} 
+          launchSpeed={.8}
           colors={[
             '#7700FF', 
             '#FFC500', 
             '#ffffff', 
             '#00A88A'
-            ]} // Customize the colors of confetti
+            ]}
       />}
 
 
@@ -71,9 +71,22 @@ function App() {
           </div>
 
           <div id="tasks">
-            <p>Task</p>
-            <p>Task</p>
-            <p>Task</p>
+
+            <div>
+              <input type="checkbox" id="task1" />
+              <label for="task1">Befriend a monkey</label>
+            </div>
+
+            <div>
+              <input type="checkbox" id="task2" />
+              <label for="task2">Knit a big ass sweater</label>
+            </div>
+
+            <div>
+              <input type="checkbox" id="task3" />
+              <label for="task3">Eat a very big lasagna, so big you don't even think you could possible eat it all but little by little you manage to do it</label>
+            </div>
+
           </div>
 
           <div className="share">
