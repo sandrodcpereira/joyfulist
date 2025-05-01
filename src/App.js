@@ -2,9 +2,6 @@
 import React, { useState } from 'react';
 import ConfettiBoom from 'react-confetti-boom';
 import { Sheet } from 'react-modal-sheet';
-
-import './style.css';
-
 import './styles/main.scss';
 
 
