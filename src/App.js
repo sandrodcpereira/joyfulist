@@ -4,18 +4,11 @@ import ConfettiBoom from 'react-confetti-boom';
 import { Sheet } from 'react-modal-sheet';
 import './styles/main.scss';
 
-
-
-
 function App() {
 
   // sheet
 
   const [isOpen, setOpen] = useState(false);
-
-
-
-
 
   // confet
   const [showConfetti, setShowConfetti] = useState(false);
@@ -30,8 +23,6 @@ function App() {
 
   return (
     <div>     
-
-      {}
       {showConfetti && 
         <ConfettiBoom 
           mode={'boom'}
@@ -43,13 +34,12 @@ function App() {
           particleCount={100} 
           launchSpeed={.8}
           colors={[
-            '#7700FF', 
+            '#6900E0', 
             '#FFC500', 
             '#ffffff', 
             '#00A88A'
             ]}
       />}
-
 
       <header>
           <button id="about" onClick={() => setOpen(true)}>About</button>
