@@ -57,6 +57,7 @@ function App() {
       <header>
           <button id="about" onClick={() => setOpen(true)}>About</button>
 
+          <button id="streak" onClick={throwConfet}>🔥 3 day streak!</button>
       </header>
 
       <div className="logo-container">
@@ -66,18 +67,17 @@ function App() {
 
       <div className="panel">
           <div className="header">
-              <p className="caption">At least one a day keeps the streak alive!</p>
-              <button id="refresh-btn">4</button>
+              <p className="caption">Tick at least one to keep your streak going!</p>
           </div>
 
           <div id="tasks">
-            <p onClick={throwConfet}>Task</p>
+            <p>Task</p>
             <p>Task</p>
             <p>Task</p>
           </div>
 
           <div className="share">
-              <button id="share">Share with your friends</button>
+              <button id="share">Show me today's tasks!</button>
           </div>
       </div>
 
@@ -98,12 +98,12 @@ function App() {
               </div>
 
               <div className="content">
-                  <img src="/assets/sparkle.png" alt="" />
-                  <p><span>Joyfulist</span> was created by <a href="https://www.theonboardinglab.com/" target="_blank">Clare</a> and <a href="https://sandro.design" target="_blank">Sandro</a> in hopes to bring a little more joy into your life.</p>
+                  <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
+                  <p><span>Joyfulist</span> was created by <a href="https://www.theonboardinglab.com/" target="_blank" rel="noreferrer noopener">Clare</a> and <a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a> in hopes to bring a little more joy into your life.</p>
               </div>
 
               <div className="content">
-                  <img src="/assets/icon.png" alt="" />
+                  <img src={`${process.env.PUBLIC_URL}/assets/icon.png`} alt="App icon" />
 
                   <p>Add to your home screen by tapping <span>Share > Add to Home Screen</span> on your phone.</p>
               </div>
@@ -114,18 +114,6 @@ function App() {
         <Sheet.Backdrop />
       </Sheet>
     </div>
-
-    /* sheet content 
-
-    
-
-
-          */
-
-
-
-
-
 
   );
 }
