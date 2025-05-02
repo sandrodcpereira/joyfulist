@@ -189,13 +189,13 @@ header {
         }
     }
 
-    .share {
+    .cta {
         display: flex;
         flex-direction: column;   
         text-align: center;
         gap: 8px;     
 
-        #share {
+        > button {
             width: 100%;
             padding: 16px;
             align-items: center;
@@ -207,6 +207,11 @@ header {
             font-size: 18px;
             line-height: 28px;
             border: none;
+
+            &#share {
+                background: $dark;
+                color: $black;
+            }
         }
     }
 }

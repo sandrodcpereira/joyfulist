@@ -1,10 +1,56 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ConfettiBoom from 'react-confetti-boom';
 import { Sheet } from 'react-modal-sheet';
 import './styles/main.scss';
 
 function App() {
+
+  // tasks loader
+
+  const [tasks, setTasks] = useState([]);
+  const [selectedTasks, setSelectedTasks] = useState([]);
+
+  // Load tasks from tasks.json
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const response = await fetch(`${process.env.PUBLIC_URL}/tasks.json`);
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+      }
+    };
+
+    loadTasks();
+  }, []);
+
+  // Select 3 random tasks that the user hasn't completed yet
+  const selectRandomTasks = () => {
+    const completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
+    const availableTasks = tasks.filter(task => !completedTasks.includes(task));
+    
+    const randomTasks = [];
+    while (randomTasks.length < 3 && availableTasks.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableTasks.length);
+      randomTasks.push(availableTasks[randomIndex]);
+      availableTasks.splice(randomIndex, 1); // Remove selected task from available
+    }
+
+    const labelEls = [
+      document.querySelector('.taskLabel1'),
+      document.querySelector('.taskLabel2'),
+      document.querySelector('.taskLabel3')
+    ];
+
+    labelEls.forEach((el, idx) => {
+      if (el) el.textContent = selectedTasks[idx] || '';
+    });
+
+    setSelectedTasks(randomTasks);
+  };
+
 
   // sheet
 
@@ -15,10 +61,6 @@ function App() {
 
   const throwConfet = () => {
     setShowConfetti(true);
-    // Reset the confetti after 3 seconds so it doesn't keep showing
-    setTimeout(() => {
-      setShowConfetti(false);
-    }, 3000); // 3 seconds
   };
 
   return (
@@ -57,27 +99,34 @@ function App() {
               <p className="caption">Tick at least one to keep your streak going!</p>
           </div>
 
+          <div>
+           
+            Experimental code
+        
+          </div>
+
           <div id="tasks">
 
             <div>
               <input type="checkbox" id="task1" />
-              <label for="task1">Befriend a monkey</label>
+              <label className="taskLabel1" for="task1">Befriend a monkey</label>
             </div>
 
             <div>
               <input type="checkbox" id="task2" />
-              <label for="task2">Knit a big ass sweater</label>
+              <label className="taskLabel2" for="task2">Knit a big ass sweater</label>
             </div>
 
             <div>
               <input type="checkbox" id="task3" />
-              <label for="task3">Eat a very big lasagna, so big you don't even think you could possible eat it all but little by little you manage to do it</label>
+              <label className="taskLabel3" for="task3">Eat a very big lasagna, so big you don't even think you could possible eat it all but little by little you manage to do it</label>
             </div>
 
           </div>
 
-          <div className="share">
-              <button id="share">Show me today's tasks!</button>
+          <div className="cta">
+              <button id="showTasks" onClick={selectRandomTasks}>Show me today's tasks!</button>
+              <button id="share">Share the joy!</button>
           </div>
       </div>
 
