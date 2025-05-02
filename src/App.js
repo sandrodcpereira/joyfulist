@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ConfettiBoom from 'react-confetti-boom';
 import { Sheet } from 'react-modal-sheet';
 import './styles/main.scss';
@@ -15,6 +15,12 @@ function App() {
   const [showShareButton, setShowShareButton] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  
+  // State for task animation
+  const [visibleTasks, setVisibleTasks] = useState([false, false, false]);
+  
+  // State for tracking checkbox states
+  const [checkedState, setCheckedState] = useState([false, false, false]);
 
   // Load initial data from localStorage
   useEffect(() => {
@@ -56,9 +62,6 @@ function App() {
     }, timeUntilMidnight + 1000); // Add 1 second buffer
   };
 
-  // State for tracking checkbox states
-  const [checkedState, setCheckedState] = useState([false, false, false]);
-
   // Reset app state (for midnight or debug)
   const resetApp = () => {
     // Check if user completed any tasks in the last 24 hours
@@ -82,10 +85,16 @@ function App() {
     
     // Reset all checkboxes to unchecked
     setCheckedState([false, false, false]);
+    
+    // Reset task visibility
+    setVisibleTasks([false, false, false]);
   };
 
   // Select random tasks function
   const selectRandomTasks = () => {
+    // Only proceed if tasks are currently disabled (no tasks have been selected yet)
+    if (!tasksDisabled) return;
+    
     // Filter out tasks that have been completed
     const availableTasks = tasks.filter(task => !completedTasks.includes(task));
     
@@ -109,6 +118,12 @@ function App() {
     setTasksDisabled(false);
     setShowRevealButton(false);
     setShowShareButton(true);
+    
+    // Fade in tasks one by one
+    setVisibleTasks([false, false, false]);
+    setTimeout(() => setVisibleTasks(prev => [true, prev[1], prev[2]]), 100);
+    setTimeout(() => setVisibleTasks(prev => [prev[0], true, prev[2]]), 400);
+    setTimeout(() => setVisibleTasks(prev => [prev[0], prev[1], true]), 700);
   };
 
   // Handle task completion
@@ -170,6 +185,13 @@ function App() {
       alert('Sharing not supported on this browser. Try copying the URL manually!');
     }
   };
+  
+  // Handle panel click - only triggers selectRandomTasks if tasks are disabled
+  const handlePanelClick = () => {
+    if (tasksDisabled) {
+      selectRandomTasks();
+    }
+  };
 
   return (
     <div className="joyfulist-app">
@@ -207,19 +229,32 @@ function App() {
         <h2>Your daily dose of joy</h2>
       </div>
 
-      <div className="panel">
+      <div 
+        className="panel" 
+        onClick={handlePanelClick}
+      >
         <div className="header">
           <p className="caption">Tick at least one to keep your streak going!</p>
         </div>
 
         <div id="tasks">
           {selectedTasks.map((task, index) => (
-            <div key={index} className={tasksDisabled ? 'disabled' : ''}>
+            <div 
+              key={index} 
+              className={`${tasksDisabled ? 'disabled' : ''} ${visibleTasks[index] ? 'visible' : 'hidden'}`}
+              style={{
+                opacity: visibleTasks[index] ? 1 : 0,
+                transition: 'opacity 0.3s ease-in',
+              }}
+            >
               <input 
                 type="checkbox" 
                 id={`task${index + 1}`}
                 checked={checkedState[index]}
-                onChange={() => {
+                onChange={(e) => {
+                  // Prevent click propagation to avoid triggering panel click
+                  e.stopPropagation();
+                  
                   // Update checked state
                   const newCheckedState = [...checkedState];
                   newCheckedState[index] = !newCheckedState[index];
@@ -230,8 +265,13 @@ function App() {
                     handleTaskCompletion(index);
                   }
                 }}
+                onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to panel
               />
-              <label className={`taskLabel${index + 1}`} htmlFor={`task${index + 1}`}>
+              <label 
+                className={`taskLabel${index + 1}`} 
+                htmlFor={`task${index + 1}`}
+                onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to panel
+              >
                 {task}
               </label>
             </div>
@@ -240,12 +280,24 @@ function App() {
 
         <div className="cta">
           {showRevealButton && (
-            <button id="showTasks" onClick={selectRandomTasks}>
+            <button 
+              id="showTasks" 
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent bubbling to panel
+                selectRandomTasks();
+              }}
+            >
               Show me today's tasks!
             </button>
           )}
           {showShareButton && (
-            <button id="share" onClick={shareJoy}>
+            <button 
+              id="share" 
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent bubbling to panel
+                shareJoy();
+              }}
+            >
               Share the joy!
             </button>
           )}
@@ -280,7 +332,6 @@ function App() {
               </div>
 
               <div className="debug">
-
                 <p className="caption" onClick={() => {
                   resetApp();
                   setOpen(false);
@@ -302,14 +353,12 @@ function App() {
                   className="caption" 
                   onClick={() => {
                     if (window.confirm("Resetting will clear your streak and completed tasks. Are you sure?")) {
-                      //localStorage.removeItem('completedTasks');
                       localStorage.clear();
                       setTimeout(() => window.location.reload(), 100); // Small delay for smoother UX
                     }
                   }}>
-                  Reset app
+                  Reset everything
                 </p>
-
               </div>
             </div>
           </Sheet.Content>
