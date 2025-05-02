@@ -101,7 +101,7 @@ function App() {
 
     // If we don't have enough tasks, fill with default messages
     while (randomTasks.length < 3) {
-      randomTasks.push(`Task ${randomTasks.length + 1} (All tasks completed!)`);
+      randomTasks.push(`[oh boy]`);
     }
 
     // Update state
@@ -181,8 +181,8 @@ function App() {
           deg={120}
           shapeSize={25}
           spreadDeg={100}
-          particleCount={100} 
-          launchSpeed={0.8}
+          particleCount={200} 
+          launchSpeed={1}
           colors={[
             '#6900E0', 
             '#FFC500', 
@@ -281,17 +281,34 @@ function App() {
 
               <div className="debug">
 
-                <p className="caption" onClick={resetApp}>Reset app</p>
+                <p className="caption" onClick={() => {
+                  resetApp();
+                  setOpen(false);
+                  }}>
+                  Reset app
+                </p>
+
                 <p className="caption" onClick={() => {
                   // Reset just the streak
+                  setOpen(false);
                   setStreak(0);
                   setLastCompletedDate(null);
                   localStorage.setItem('streakData', JSON.stringify({ streak: 0, lastCompletedDate: null }));
-                }}>Reset streak</p>
+                  }}>
+                  Reset streak
+                </p>
 
-                <p className="caption" onClick={() => {
-                    localStorage.removeItem('completedTasks'); // Removes just this item
-                }}>Clear cache</p>
+                <p 
+                  className="caption" 
+                  onClick={() => {
+                    if (window.confirm("Resetting will clear your streak and completed tasks. Are you sure?")) {
+                      //localStorage.removeItem('completedTasks');
+                      localStorage.clear();
+                      setTimeout(() => window.location.reload(), 100); // Small delay for smoother UX
+                    }
+                  }}>
+                  Reset app
+                </p>
 
               </div>
             </div>
