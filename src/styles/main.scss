@@ -116,9 +116,16 @@ header {
         color: $black;
     }
 
-    button#streak {
+    #streak {
         background: $darkpurple;
         color: $white;
+        font-family: new-hero, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 16px;
+    border: none;
     }
 
 
@@ -264,6 +271,13 @@ header {
                 background-color: $dark;
             }
         }
+
+        &.debug {
+            justify-content: space-between;
+            align-items: center;
+            align-self: stretch;
+            display: flex;
+        }
     }    
 }
 
@@ -292,6 +306,13 @@ header {
 
         &:has(label:active) {
             transform: scale(0.98);
+        }
+
+        &.disabled {
+            > * {
+                opacity: .5;
+                pointer-events: none;
+            }
         }
     
         label {
