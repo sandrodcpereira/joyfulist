@@ -324,6 +324,7 @@ header {
     align-items: flex-start;
     align-self: stretch;
     padding: 0;
+    border: none;
 
     div {
         width: 100%;
@@ -335,8 +336,6 @@ header {
         border-bottom: 1px solid $border;
         position: relative;
         transition: transform .1s cubic-bezier(0.51, 1.66, 0.68, 0.97);
-
-        &:last-child {border: none;}
 
         &:has(label:active) {
             transform: scale(0.98);
