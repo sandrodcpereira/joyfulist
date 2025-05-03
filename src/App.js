@@ -15,15 +15,24 @@ function App() {
   const [showShareButton, setShowShareButton] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [todayDate, setTodayDate] = useState('');
+  const [tasksSelectedToday, setTasksSelectedToday] = useState(false);
   
-  // State for task animation
+  // State for animation control
   const [visibleTasks, setVisibleTasks] = useState([false, false, false]);
+  const [showInitialState, setShowInitialState] = useState(true);
+  const [showHeader, setShowHeader] = useState(false);
+  const [showCTA, setShowCTA] = useState(false);
   
   // State for tracking checkbox states
   const [checkedState, setCheckedState] = useState([false, false, false]);
 
   // Load initial data from localStorage
   useEffect(() => {
+    // Set today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+    setTodayDate(today);
+
     // Load completed tasks
     const storedCompletedTasks = JSON.parse(localStorage.getItem('completedTasks') || '[]');
     setCompletedTasks(storedCompletedTasks);
@@ -45,9 +54,47 @@ function App() {
     };
     loadTasks();
 
+    // Check if tasks have been selected today
+    const dailyTasksData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
+    
+    if (dailyTasksData.date === today && dailyTasksData.tasks && dailyTasksData.tasks.length === 3) {
+      // Restore today's tasks
+      setSelectedTasks(dailyTasksData.tasks);
+      setTasksDisabled(false);
+      setShowRevealButton(false);
+      setShowShareButton(true);
+      setTasksSelectedToday(true);
+      
+      // Set visibility states for elements
+      setShowInitialState(false);
+      setShowHeader(true);
+      setShowCTA(true);
+      
+      // Restore checked state if available
+      if (dailyTasksData.checkedState && dailyTasksData.checkedState.length === 3) {
+        setCheckedState(dailyTasksData.checkedState);
+      }
+      
+      // Show tasks with animation
+      setVisibleTasks([true, true, true]);
+    }
+
     // Set up midnight reset
     setupMidnightReset();
   }, []);
+
+  // Save checked state whenever it changes
+  useEffect(() => {
+    if (!tasksDisabled && tasksSelectedToday) {
+      const dailyTasksData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
+      if (dailyTasksData.date === todayDate) {
+        localStorage.setItem('dailyTasksData', JSON.stringify({
+          ...dailyTasksData,
+          checkedState: checkedState
+        }));
+      }
+    }
+  }, [checkedState, tasksDisabled, tasksSelectedToday, todayDate]);
 
   // Function to set up the midnight reset
   const setupMidnightReset = () => {
@@ -77,6 +124,13 @@ function App() {
       localStorage.setItem('streakData', JSON.stringify(newStreakData));
     }
 
+    // Update today's date
+    const today = new Date().toISOString().split('T')[0];
+    setTodayDate(today);
+    
+    // Reset daily tasks data
+    setTasksSelectedToday(false);
+
     // Reset tasks UI
     setSelectedTasks(['Tap', 'To', 'Show']);
     setTasksDisabled(true);
@@ -86,7 +140,10 @@ function App() {
     // Reset all checkboxes to unchecked
     setCheckedState([false, false, false]);
     
-    // Reset task visibility
+    // Reset visibility states
+    setShowInitialState(true);
+    setShowHeader(false);
+    setShowCTA(false);
     setVisibleTasks([false, false, false]);
   };
 
@@ -95,35 +152,74 @@ function App() {
     // Only proceed if tasks are currently disabled (no tasks have been selected yet)
     if (!tasksDisabled) return;
     
-    // Filter out tasks that have been completed
-    const availableTasks = tasks.filter(task => !completedTasks.includes(task));
+    const today = new Date().toISOString().split('T')[0];
     
-    // Select 3 random tasks
-    const randomTasks = [];
-    const tempAvailable = [...availableTasks];
+    // Check if we already have saved tasks for today
+    const dailyTasksData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
     
-    while (randomTasks.length < 3 && tempAvailable.length > 0) {
-      const randomIndex = Math.floor(Math.random() * tempAvailable.length);
-      randomTasks.push(tempAvailable[randomIndex]);
-      tempAvailable.splice(randomIndex, 1);
-    }
-
-    // If we don't have enough tasks, fill with default messages
-    while (randomTasks.length < 3) {
-      randomTasks.push(`[oh boy]`);
+    let tasksList = [];
+    
+    if (dailyTasksData.date === today && dailyTasksData.tasks && dailyTasksData.tasks.length === 3) {
+      // Use stored tasks for today
+      tasksList = dailyTasksData.tasks;
+      
+      // Restore checked state if available
+      if (dailyTasksData.checkedState && dailyTasksData.checkedState.length === 3) {
+        setCheckedState(dailyTasksData.checkedState);
+      }
+    } else {
+      // Generate new tasks for today
+      // Filter out tasks that have been completed
+      const availableTasks = tasks.filter(task => !completedTasks.includes(task));
+      
+      // Select 3 random tasks
+      tasksList = [];
+      const tempAvailable = [...availableTasks];
+      
+      while (tasksList.length < 3 && tempAvailable.length > 0) {
+        const randomIndex = Math.floor(Math.random() * tempAvailable.length);
+        tasksList.push(tempAvailable[randomIndex]);
+        tempAvailable.splice(randomIndex, 1);
+      }
+  
+      // If we don't have enough tasks, fill with default messages
+      while (tasksList.length < 3) {
+        tasksList.push(`[oh boy]`);
+      }
+      
+      // Store today's tasks in localStorage
+      localStorage.setItem('dailyTasksData', JSON.stringify({
+        date: today,
+        tasks: tasksList,
+        checkedState: [false, false, false]
+      }));
     }
 
     // Update state
-    setSelectedTasks(randomTasks);
+    setSelectedTasks(tasksList);
     setTasksDisabled(false);
     setShowRevealButton(false);
     setShowShareButton(true);
+    setTasksSelectedToday(true);
     
-    // Fade in tasks one by one
-    setVisibleTasks([false, false, false]);
-    setTimeout(() => setVisibleTasks(prev => [true, prev[1], prev[2]]), 100);
-    setTimeout(() => setVisibleTasks(prev => [prev[0], true, prev[2]]), 400);
-    setTimeout(() => setVisibleTasks(prev => [prev[0], prev[1], true]), 700);
+    // Start the animation sequence
+    // 1. Fade out initialState
+    setShowInitialState(false);
+    
+    // 2. Fade in header after initialState fades out
+    setTimeout(() => {
+      setShowHeader(true);
+    }, 300);
+    
+    // 3. Fade in tasks one by one
+    setTimeout(() => setVisibleTasks(prev => [true, false, false]), 600);
+    setTimeout(() => setVisibleTasks(prev => [true, true, false]), 900);
+    setTimeout(() => setVisibleTasks(prev => [true, true, true]), 1200);
+    
+    // 4. Finally show the CTA (share button)
+    setTimeout(() => {
+      setShowCTA(true);
+    }, 1500);
   };
 
   // Handle task completion
@@ -193,6 +289,23 @@ function App() {
     }
   };
 
+  // Add a debug function to reset daily tasks
+  const resetDailyTasks = () => {
+    localStorage.removeItem('dailyTasksData');
+    setTasksSelectedToday(false);
+    setSelectedTasks(['Tap', 'To', 'Show']);
+    setTasksDisabled(true);
+    setShowRevealButton(true);
+    setShowShareButton(false);
+    setCheckedState([false, false, false]);
+    
+    // Reset visibility states
+    setShowInitialState(true);
+    setShowHeader(false);
+    setShowCTA(false);
+    setVisibleTasks([false, false, false]);
+  };
+
   return (
     <div className="joyfulist-app">
       {showConfetti && 
@@ -233,16 +346,39 @@ function App() {
         className="panel" 
         onClick={handlePanelClick}
       >
-        <div className="header">
+        {/* Initial state - only shown before tasks are selected */}
+        <div 
+          className="initialState" 
+          style={{
+            display: showInitialState ? 'block' : 'none',
+            opacity: showInitialState ? 1 : 0,
+            transition: 'opacity 0.3s ease-out',
+          }}
+        >
+          <div className="illustration"></div>
+          <p>Touch here to get started!</p>
+        </div>
+
+        {/* Header - shown after initialState fades out */}
+        <div 
+          className="header"
+          style={{
+            display: showHeader ? 'block' : 'none',
+            opacity: showHeader ? 1 : 0,
+            transition: 'opacity 0.3s ease-in',
+          }}
+        >
           <p className="caption">Tick at least one to keep your streak going!</p>
         </div>
 
+        {/* Tasks - shown one by one after header */}
         <div id="tasks">
           {selectedTasks.map((task, index) => (
             <div 
               key={index} 
-              className={`${tasksDisabled ? 'disabled' : ''} ${visibleTasks[index] ? 'visible' : 'hidden'}`}
+              className={`${tasksDisabled ? 'disabled' : ''}`}
               style={{
+                display: !showInitialState ? 'flex' : 'none', // Use flex to maintain layout
                 opacity: visibleTasks[index] ? 1 : 0,
                 transition: 'opacity 0.3s ease-in',
               }}
@@ -278,18 +414,15 @@ function App() {
           ))}
         </div>
 
-        <div className="cta">
-          {showRevealButton && (
-            <button 
-              id="showTasks" 
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent bubbling to panel
-                selectRandomTasks();
-              }}
-            >
-              Show me today's tasks!
-            </button>
-          )}
+        {/* CTA section - shown last */}
+        <div 
+          className="cta"
+          style={{
+            display: showCTA ? 'block' : 'none',
+            opacity: showCTA ? 1 : 0,
+            transition: 'opacity 0.3s ease-in',
+          }}
+        >
           {showShareButton && (
             <button 
               id="share" 
@@ -347,6 +480,14 @@ function App() {
                   localStorage.setItem('streakData', JSON.stringify({ streak: 0, lastCompletedDate: null }));
                   }}>
                   Reset streak
+                </p>
+
+                <p className="caption" onClick={() => {
+                  // Reset daily tasks
+                  resetDailyTasks();
+                  setOpen(false);
+                  }}>
+                  Reset today's tasks
                 </p>
 
                 <p 
