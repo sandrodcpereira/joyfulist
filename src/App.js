@@ -273,7 +273,7 @@ function App() {
     if (navigator.share) {
       navigator.share({
         title: 'Joyfulist',
-        text: `I'm on a ${streak}-day joy streak with Joyfulist! Today I completed: ${selectedTasks.join(', ')}`,
+        text: `I'm on a ${streak}-day joy streak with Joyfulist! My tasks for today are: ${selectedTasks.join(', ')}. What are yours?`,
         url: window.location.href
       })
       .catch(error => console.log('Error sharing:', error));
@@ -350,20 +350,21 @@ function App() {
         <div 
           className="initialState" 
           style={{
-            display: showInitialState ? 'block' : 'none',
+            display: showInitialState ? 'flex' : 'none',
             opacity: showInitialState ? 1 : 0,
             transition: 'opacity 0.3s ease-out',
           }}
         >
-          <div className="illustration"></div>
-          <p>Touch here to get started!</p>
+          <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
+          <button>I'm ready for some joy!</button>
+          <p className="caption">Your daily joyful tasks are waiting</p>
         </div>
 
         {/* Header - shown after initialState fades out */}
         <div 
           className="header"
           style={{
-            display: showHeader ? 'block' : 'none',
+            display: showHeader ? 'flex' : 'none',
             opacity: showHeader ? 1 : 0,
             transition: 'opacity 0.3s ease-in',
           }}
@@ -418,7 +419,7 @@ function App() {
         <div 
           className="cta"
           style={{
-            display: showCTA ? 'block' : 'none',
+            display: showCTA ? 'flex' : 'none',
             opacity: showCTA ? 1 : 0,
             transition: 'opacity 0.3s ease-in',
           }}
@@ -465,41 +466,41 @@ function App() {
               </div>
 
               <div className="debug">
-                <p className="caption" onClick={() => {
+
+                <button onClick={() => {
                   resetApp();
                   setOpen(false);
                   }}>
-                  Reset app
-                </p>
+                  Set to initial state
+                </button>
 
-                <p className="caption" onClick={() => {
+                <button onClick={() => {
                   // Reset just the streak
                   setOpen(false);
                   setStreak(0);
                   setLastCompletedDate(null);
                   localStorage.setItem('streakData', JSON.stringify({ streak: 0, lastCompletedDate: null }));
                   }}>
-                  Reset streak
-                </p>
+                  Set streak to zero
+                </button>
 
-                <p className="caption" onClick={() => {
+                <button onClick={() => {
                   // Reset daily tasks
                   resetDailyTasks();
                   setOpen(false);
                   }}>
                   Reset today's tasks
-                </p>
+                </button>
 
-                <p 
-                  className="caption" 
+                <button 
                   onClick={() => {
                     if (window.confirm("Resetting will clear your streak and completed tasks. Are you sure?")) {
                       localStorage.clear();
                       setTimeout(() => window.location.reload(), 100); // Small delay for smoother UX
                     }
                   }}>
-                  Reset everything
-                </p>
+                  Clear all cache
+                </button>
               </div>
             </div>
           </Sheet.Content>
