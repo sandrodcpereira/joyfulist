@@ -21,8 +21,8 @@ function App() {
   // State for animation control
   const [visibleTasks, setVisibleTasks] = useState([false, false, false]);
   const [showInitialState, setShowInitialState] = useState(true);
-  const [showHeader, setShowHeader] = useState(false);
-  const [showCTA, setShowCTA] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(false);
+  const [ctaVisible, setCtaVisible] = useState(false);
   
   // State for tracking checkbox states
   const [checkedState, setCheckedState] = useState([false, false, false]);
@@ -67,8 +67,8 @@ function App() {
       
       // Set visibility states for elements
       setShowInitialState(false);
-      setShowHeader(true);
-      setShowCTA(true);
+      setHeaderVisible(true);
+      setCtaVisible(true);
       
       // Restore checked state if available
       if (dailyTasksData.checkedState && dailyTasksData.checkedState.length === 3) {
@@ -142,8 +142,8 @@ function App() {
     
     // Reset visibility states
     setShowInitialState(true);
-    setShowHeader(false);
-    setShowCTA(false);
+    setHeaderVisible(false);
+    setCtaVisible(false);
     setVisibleTasks([false, false, false]);
   };
 
@@ -208,7 +208,7 @@ function App() {
     
     // 2. Fade in header after initialState fades out
     setTimeout(() => {
-      setShowHeader(true);
+      setHeaderVisible(true);
     }, 300);
     
     // 3. Fade in tasks one by one
@@ -218,7 +218,7 @@ function App() {
     
     // 4. Finally show the CTA (share button)
     setTimeout(() => {
-      setShowCTA(true);
+      setCtaVisible(true);
     }, 1500);
   };
 
@@ -301,8 +301,8 @@ function App() {
     
     // Reset visibility states
     setShowInitialState(true);
-    setShowHeader(false);
-    setShowCTA(false);
+    setHeaderVisible(false);
+    setCtaVisible(false);
     setVisibleTasks([false, false, false]);
   };
 
@@ -364,9 +364,9 @@ function App() {
         <div 
           className="header"
           style={{
-            display: showHeader ? 'flex' : 'none',
-            opacity: showHeader ? 1 : 0,
+            opacity: headerVisible ? 1 : 0,
             transition: 'opacity 0.3s ease-in',
+            visibility: headerVisible || !showInitialState ? 'visible' : 'hidden',
           }}
         >
           <p className="caption">Tick at least one to keep your streak going!</p>
@@ -379,7 +379,7 @@ function App() {
               key={index} 
               className={`${tasksDisabled ? 'disabled' : ''}`}
               style={{
-                display: !showInitialState ? 'flex' : 'none', // Use flex to maintain layout
+                visibility: !showInitialState ? 'visible' : 'hidden',
                 opacity: visibleTasks[index] ? 1 : 0,
                 transition: 'opacity 0.3s ease-in',
               }}
@@ -419,9 +419,9 @@ function App() {
         <div 
           className="cta"
           style={{
-            display: showCTA ? 'flex' : 'none',
-            opacity: showCTA ? 1 : 0,
+            opacity: ctaVisible ? 1 : 0,
             transition: 'opacity 0.3s ease-in',
+            visibility: ctaVisible || !showInitialState ? 'visible' : 'hidden',
           }}
         >
           {showShareButton && (

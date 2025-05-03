@@ -167,6 +167,7 @@ header {
     border-radius: 32px 32px 0px 0px;
     background: $yellow;
     min-height: 411px;
+    position: relative;
 
     > div {
         display:flex;
@@ -292,6 +293,7 @@ header {
     gap: 16px;
     flex: 1 0 0;
     align-self: stretch;
+    position: absolute;
 
     img {
         width: 100%;
