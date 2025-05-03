@@ -268,18 +268,19 @@ header {
                 background-color: $dark;
             }
         }
-
-        &.debug {
-                justify-content: center;
-                align-items: center;
-                flex-direction: row;
-                gap: 8px;
-                align-self: stretch;
-                display: flex;
-                flex-wrap: wrap;
-                align-content: center;
-        }
     }    
+}
+
+.debug {
+    padding: 24px 24px 48px 24px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    align-self: stretch;
+    display: none;
+    flex-wrap: wrap;
+    align-content: center;
 }
 
 /* initial state */ 
