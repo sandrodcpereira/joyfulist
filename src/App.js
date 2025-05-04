@@ -505,7 +505,7 @@ function App() {
 
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/icon.png`} alt="App icon" />
-                <p>Add to your home screen by tapping <span>Share > Add to Home Screen</span> on your phone.</p>
+                <p>Add to your home screen by tapping <span className="shareIcon apple"></span> <span>> Add to Home Screen</span> on your phone.</p>
               </div>
 
               <div className="content credits">

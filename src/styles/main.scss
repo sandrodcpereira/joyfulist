@@ -258,12 +258,27 @@ header {
 
         img {width: 54px;}
 
-        p {margin: 0}
+        p {
+            margin: 0;
+        }
 
         p > span, p a {
             color: $purple;
             font-family: monotalic-narrow, sans-serif;
             font-weight: 700;
+        }
+
+        .shareIcon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-position: center center;
+            background-size: 16px;
+            vertical-align: middle;
+
+            &.apple {
+                background-image: url(../../public/assets/icon-share.png);
+            }
         }
 
         &.header {
