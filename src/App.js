@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import ConfettiBoom from 'react-confetti-boom';
 import { Sheet } from 'react-modal-sheet';
 import './styles/main.scss';
@@ -251,6 +251,7 @@ function App() {
       localStorage.setItem('streakData', JSON.stringify(streakData));
       
       // Trigger confetti only when streak is updated
+      handleStreakPop();
       setShowConfetti(true);
       
       // Reset confetti after animation
@@ -258,14 +259,6 @@ function App() {
         setShowConfetti(false);
       }, 4000);
     }
-  };
-
-  // For debug - to manually trigger confetti
-  const throwConfetti = () => {
-    setShowConfetti(true);
-    setTimeout(() => {
-      setShowConfetti(false);
-    }, 4000);
   };
 
   // Share functionality
@@ -315,6 +308,16 @@ function App() {
     }
   };
 
+  // Streak pop function
+    
+  const [isPopping, setIsPopping] = useState(false);
+
+  const handleStreakPop = () => {
+    setIsPopping(true);
+    setTimeout(() => setIsPopping(false), 300); // Reset after animation completes
+  };
+
+
   return (
     <div className="joyfulist-app">
       {showConfetti && 
@@ -338,7 +341,14 @@ function App() {
 
       <header>
         <button id="about" onClick={() => setOpen(true)}>About</button>
-        <div id="streak">
+        <div 
+          id="streak" 
+          style={{
+            transform: isPopping ? 'scale(1.3)' : 'scale(1)',
+            transition: 'transform 0.2s ease-in-out',
+            display: 'inline-block'
+          }}
+          >
           {streak === 0 
             ? "✨ No streak yet" 
             : `🔥 ${streak} day streak!`
