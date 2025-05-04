@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ConfettiBoom from 'react-confetti-boom';
 import { Sheet } from 'react-modal-sheet';
+import Sparkles from './sparkle.js';
 import './styles/main.scss';
 
 function App() {
@@ -357,7 +358,15 @@ function App() {
       </header>
 
       <div className="logo-container">
-        <h1>Joyfulist</h1>
+        <Sparkles 
+          color="#FFC500" 
+          count={5} 
+          minSize={20} 
+          maxSize={20}
+        >
+          <h1>Joyfulist</h1>
+        </Sparkles>
+
         <h2>Your daily dose of joy</h2>
       </div>
 
