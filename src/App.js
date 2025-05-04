@@ -496,7 +496,7 @@ function App() {
               </div>
 
               <div className="content credits">
-                <p className="caption">This app uses <a target="_blank" href="https://temzasse.github.io/react-modal-sheet/">React Modal Sheet</a>, <a target="_blank" href="https://github.com/almond-bongbong/react-confetti-boom">React Confetti Boom</a>, and a custom implementation of Josh Comeau's <a target="_blank" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
+                <p className="caption">This app uses <a target="_blank" rel="noreferrer" href="https://temzasse.github.io/react-modal-sheet/">React Modal Sheet</a>, <a target="_blank" rel="noreferrer" href="https://github.com/almond-bongbong/react-confetti-boom">React Confetti Boom</a>, and a custom implementation of Josh Comeau's <a target="_blank" rel="noreferrer" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
                 </p>
               </div>
 
