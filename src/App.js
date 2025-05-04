@@ -487,7 +487,7 @@ function App() {
                   <span>Joyfulist</span> was created by <a href="https://www.theonboardinglab.com/" target="_blank" rel="noreferrer noopener">Clare</a> and <a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a> in hopes to bring a little more joy into your life.
                 </p>
 
-                <p className="caption">All tasks were written by us — no AI generation here! Get in touch if you have any tasks you'd like us to add.</p>
+                <p className="caption">All tasks were written by us. Get in touch if you have any you'd like us to add!</p>
               </div>
 
               <div className="content">
@@ -496,7 +496,9 @@ function App() {
               </div>
 
               <div className="content credits">
-                <p className="caption">This app uses <a target="_blank" rel="noreferrer" href="https://temzasse.github.io/react-modal-sheet/">React Modal Sheet</a>, <a target="_blank" rel="noreferrer" href="https://github.com/almond-bongbong/react-confetti-boom">React Confetti Boom</a>, and a custom implementation of Josh Comeau's <a target="_blank" rel="noreferrer" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
+                <p className="caption">This app doesn't track you in any way. Data like your streak count and completed tasks is saved on your device only — it is only accessible by you.</p>
+
+                <p className="caption">Developed using <a target="_blank" rel="noreferrer" href="https://temzasse.github.io/react-modal-sheet/">Modal Sheet</a>, <a target="_blank" rel="noreferrer" href="https://github.com/almond-bongbong/react-confetti-boom">Confetti Boom</a>, and Josh Comeau's <a target="_blank" rel="noreferrer" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
                 </p>
               </div>
 
