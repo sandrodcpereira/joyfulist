@@ -487,9 +487,7 @@ function App() {
                   <span>Joyfulist</span> was created by <a href="https://www.theonboardinglab.com/" target="_blank" rel="noreferrer noopener">Clare</a> and <a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a> in hopes to bring a little more joy into your life.
                 </p>
 
-                <p>We take pride in having written the tasks in this app. They have not been AI generated.</p>
-
-                <p>Have ideas for tasks? Get in touch!</p>
+                <p className="caption">All tasks were written by us — no AI generation here! Get in touch if you have any tasks you'd like us to add.</p>
               </div>
 
               <div className="content">
@@ -497,7 +495,12 @@ function App() {
                 <p>Add to your home screen by tapping <span>Share > Add to Home Screen</span> on your phone.</p>
               </div>
 
-              <section className="debug">
+              <div className="content credits">
+                <p className="caption">This app uses <a target="_blank" href="https://temzasse.github.io/react-modal-sheet/">React Modal Sheet</a>, <a target="_blank" href="https://github.com/almond-bongbong/react-confetti-boom">React Confetti Boom</a>, and a custom implementation of Josh Comeau's <a target="_blank" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
+                </p>
+              </div>
+
+              <div className="debug">
 
                 <button onClick={() => {
                   resetApp();
@@ -533,7 +536,7 @@ function App() {
                   }}>
                   Clear all cache
                 </button>
-              </section>
+              </div>
             </div>
           </Sheet.Content>
         </Sheet.Container>

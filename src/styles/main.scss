@@ -98,7 +98,7 @@ p.caption {
     margin: 0;
     font-size: 14px;
     font-weight: 600;
-    line-height: 28px; 
+    line-height: 22px; 
     color: $secondary;
 }
 
@@ -237,24 +237,34 @@ header {
 }
 .react-modal-sheet-content > div {
 
+    height: 100%;
+    overflow: scroll;
+
+    &:last-child {
+            border-bottom: none;
+            padding-bottom: 24px;
+    }
+
     > div {
         padding: 24px;
         text-align: center;
-        border-bottom: 1px solid $border;
-
-        &:last-child {
-            border-bottom: none;
-            padding-bottom: 40px;
-        }
+        gap: 8px;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: flex-start;
+        align-items: center;
+        border-top: 1px solid $border;
 
         img {width: 54px;}
+
+        p {margin: 0}
 
         p > span, p a {
             color: $purple;
             font-family: monotalic-narrow, sans-serif;
-            font-size: 18px;
             font-weight: 700;
-        }   
+        }
 
         &.header {
             justify-content: space-between;
@@ -262,26 +272,42 @@ header {
             align-self: stretch;
             display: flex;
             padding-top: 0;
+            flex-direction: row;
 
             button {
                 color: $black;
                 background-color: $dark;
             }
         }
+
+        &.debug {
+            padding: 24px 24px 24px 24px;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+            gap: 8px;
+            align-self: stretch;
+            display: none;
+            flex-wrap: wrap;
+            align-content: center;
+        }
+
+        &:first-child {
+            border-top: none;
+        }
+
+        &.credits {
+
+            a {
+                color: $secondary;
+                font-weight: 600;
+                font-family: new-hero, sans-serif;;
+            }
+        }
     }    
 }
 
-.debug {
-    padding: 24px 24px 48px 24px;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    gap: 8px;
-    align-self: stretch;
-    display: none;
-    flex-wrap: wrap;
-    align-content: center;
-}
+
 
 /* initial state */ 
 
