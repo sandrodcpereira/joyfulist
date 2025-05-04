@@ -484,7 +484,7 @@ function App() {
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" id="hiddenToggle" onClick={toggleDebug} />
                 <p>
-                  <span>Joyfulist</span> was created by <a href="https://www.theonboardinglab.com/" target="_blank" rel="noreferrer noopener">Clare</a> and <a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a> in hopes to bring a little more joy into your life.
+                  <span>Joyfulist</span> was created by <span>Clare</span> and <a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a> in hopes to bring a little more joy into your life.
                 </p>
 
                 <p className="caption">All tasks were written by us. Get in touch if you have any you'd like us to add!</p>
