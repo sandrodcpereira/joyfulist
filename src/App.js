@@ -318,6 +318,19 @@ function App() {
     setTimeout(() => setIsPopping(false), 300); // Reset after animation completes
   };
 
+  // Function to determine the header message based on streak and task completion
+  const getHeaderMessage = () => {
+    // Check if any task is marked as completed
+    const hasCompletedTask = checkedState.some(checked => checked === true);
+    
+    if (hasCompletedTask) {
+      return "Amazing! Come back tomorrow for more tasks!";
+    } else if (streak === 0) {
+      return "Tick at least one to get a streak going!";
+    } else {
+      return "Tick at least one to keep your streak going!";
+    }
+  };
 
   return (
     <div className="joyfulist-app">
@@ -397,7 +410,7 @@ function App() {
             visibility: headerVisible || !showInitialState ? 'visible' : 'hidden',
           }}
         >
-          <p className="caption">Tick at least one to keep your streak going!</p>
+          <p className="caption">{getHeaderMessage()}</p>
         </div>
 
         {/* Tasks - shown one by one after header */}
