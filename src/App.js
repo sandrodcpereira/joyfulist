@@ -18,6 +18,7 @@ function App() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [todayDate, setTodayDate] = useState('');
   const [tasksSelectedToday, setTasksSelectedToday] = useState(false);
+  const [hasIncreasedStreakToday, setHasIncreasedStreakToday] = useState(false);
   
   // State for animation control
   const [visibleTasks, setVisibleTasks] = useState([false, false, false]);
@@ -42,6 +43,7 @@ function App() {
     const streakData = JSON.parse(localStorage.getItem('streakData') || '{}');
     setStreak(parseInt(streakData.streak || '0', 10));
     setLastCompletedDate(streakData.lastCompletedDate || null);
+    setHasIncreasedStreakToday(streakData.lastCompletedDate === today);
 
     // Load tasks.json
     const loadTasks = async () => {
@@ -97,6 +99,70 @@ function App() {
     }
   }, [checkedState, tasksDisabled, tasksSelectedToday, todayDate]);
 
+  // Update streak based on checked states
+  useEffect(() => {
+    // Check if any task is checked
+    const anyTaskChecked = checkedState.some(checked => checked === true);
+    
+    // Only update streak if there's at least one task checked and streak hasn't been increased today
+    if (anyTaskChecked && !hasIncreasedStreakToday && !tasksDisabled) {
+      updateStreak();
+    } else if (!anyTaskChecked && hasIncreasedStreakToday && !tasksDisabled) {
+      // If all tasks are unchecked and streak was already increased today, revert the streak
+      revertStreak();
+    }
+  }, [checkedState]);
+
+  // Function to update streak
+  const updateStreak = () => {
+    const today = new Date().toISOString().split('T')[0]; // e.g. "2025-05-02"
+    
+    if (lastCompletedDate !== today) {
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      setLastCompletedDate(today);
+      setHasIncreasedStreakToday(true);
+      
+      // Store streak data
+      const streakData = { streak: newStreak, lastCompletedDate: today };
+      localStorage.setItem('streakData', JSON.stringify(streakData));
+      
+      // Trigger confetti when streak is updated
+      handleStreakPop();
+      setShowConfetti(true);
+      
+      // Reset confetti after animation
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 4000);
+    }
+  };
+
+  // Function to revert streak if all tasks are unchecked
+  const revertStreak = () => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Only revert if streak was increased today
+    if (lastCompletedDate === today && hasIncreasedStreakToday) {
+      const newStreak = Math.max(0, streak - 1); // Ensure streak doesn't go below 0
+      setStreak(newStreak);
+      
+      // Reset lastCompletedDate if streak is now 0, otherwise keep the previous date
+      const newLastCompletedDate = newStreak === 0 ? null : 
+                                  (streak > 1 ? 
+                                    // If streak was > 1, set to yesterday
+                                    new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] 
+                                    : null);
+      
+      setLastCompletedDate(newLastCompletedDate);
+      setHasIncreasedStreakToday(false);
+      
+      // Store updated streak data
+      const streakData = { streak: newStreak, lastCompletedDate: newLastCompletedDate };
+      localStorage.setItem('streakData', JSON.stringify(streakData));
+    }
+  };
+
   // Function to set up the midnight reset
   const setupMidnightReset = () => {
     const now = new Date();
@@ -131,6 +197,7 @@ function App() {
     
     // Reset daily tasks data
     setTasksSelectedToday(false);
+    setHasIncreasedStreakToday(false);
 
     // Reset tasks UI
     setSelectedTasks(['Tap', 'To', 'Show']);
@@ -239,27 +306,7 @@ function App() {
       localStorage.setItem('completedTasks', JSON.stringify(newCompletedTasks));
     }
     
-    // Update streak if it's a new day
-    const today = new Date().toISOString().split('T')[0]; // e.g. "2025-05-02"
-    
-    if (lastCompletedDate !== today) {
-      const newStreak = streak + 1;
-      setStreak(newStreak);
-      setLastCompletedDate(today);
-      
-      // Store streak data
-      const streakData = { streak: newStreak, lastCompletedDate: today };
-      localStorage.setItem('streakData', JSON.stringify(streakData));
-      
-      // Trigger confetti only when streak is updated
-      handleStreakPop();
-      setShowConfetti(true);
-      
-      // Reset confetti after animation
-      setTimeout(() => {
-        setShowConfetti(false);
-      }, 4000);
-    }
+    // Note: The streak updating is now handled in the useEffect hook that watches checkedState
   };
 
   // Share functionality
@@ -287,6 +334,7 @@ function App() {
   const resetDailyTasks = () => {
     localStorage.removeItem('dailyTasksData');
     setTasksSelectedToday(false);
+    setHasIncreasedStreakToday(false);
     setSelectedTasks(['Tap', 'To', 'Show']);
     setTasksDisabled(true);
     setShowRevealButton(true);
@@ -529,6 +577,7 @@ function App() {
                   setOpen(false);
                   setStreak(0);
                   setLastCompletedDate(null);
+                  setHasIncreasedStreakToday(false);
                   localStorage.setItem('streakData', JSON.stringify({ streak: 0, lastCompletedDate: null }));
                   }}>
                   Set streak to zero
