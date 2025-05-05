@@ -367,7 +367,7 @@ function App() {
     const hasCompletedTask = checkedState.some(checked => checked === true);
     
     if (hasCompletedTask) {
-      return "Amazing! Come back tomorrow for more tasks!";
+      return "Fantastic! Check again tomorrow for new tasks!";
     } else if (streak === 0) {
       return "Tick at least one to get a streak going!";
     } else {
