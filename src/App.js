@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ConfettiBoom from 'react-confetti-boom';
 import { Sheet } from 'react-modal-sheet';
 import Sparkles from './sparkle.js';
@@ -12,7 +12,6 @@ function App() {
   const [streak, setStreak] = useState(0);
   const [lastCompletedDate, setLastCompletedDate] = useState(null);
   const [tasksDisabled, setTasksDisabled] = useState(true);
-  const [showRevealButton, setShowRevealButton] = useState(true);
   const [showShareButton, setShowShareButton] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -28,6 +27,107 @@ function App() {
   
   // State for tracking checkbox states
   const [checkedState, setCheckedState] = useState([false, false, false]);
+
+  // Function to update streak
+  const updateStreak = useCallback(() => {
+    const today = new Date().toISOString().split('T')[0]; // e.g. "2025-05-02"
+    
+    if (lastCompletedDate !== today) {
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      setLastCompletedDate(today);
+      setHasIncreasedStreakToday(true);
+      
+      // Store streak data
+      const streakData = { streak: newStreak, lastCompletedDate: today };
+      localStorage.setItem('streakData', JSON.stringify(streakData));
+      
+      // Trigger confetti when streak is updated
+      handleStreakPop();
+      setShowConfetti(true);
+      
+      // Reset confetti after animation
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 4000);
+    }
+  }, [lastCompletedDate, streak]);
+
+  // Function to revert streak if all tasks are unchecked
+  const revertStreak = useCallback(() => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Only revert if streak was increased today
+    if (lastCompletedDate === today && hasIncreasedStreakToday) {
+      const newStreak = Math.max(0, streak - 1); // Ensure streak doesn't go below 0
+      setStreak(newStreak);
+      
+      // Reset lastCompletedDate if streak is now 0, otherwise keep the previous date
+      const newLastCompletedDate = newStreak === 0 ? null : 
+                                  (streak > 1 ? 
+                                    // If streak was > 1, set to yesterday
+                                    new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] 
+                                    : null);
+      
+      setLastCompletedDate(newLastCompletedDate);
+      setHasIncreasedStreakToday(false);
+      
+      // Store updated streak data
+      const streakData = { streak: newStreak, lastCompletedDate: newLastCompletedDate };
+      localStorage.setItem('streakData', JSON.stringify(streakData));
+    }
+  }, [lastCompletedDate, hasIncreasedStreakToday, streak]);
+
+  // Function to set up the midnight reset
+  const setupMidnightReset = useCallback(() => {
+    const now = new Date();
+    const nextMidnight = new Date();
+    nextMidnight.setHours(24, 0, 0, 0);
+    const timeUntilMidnight = nextMidnight - now;
+    
+    setTimeout(() => {
+      resetApp();
+      setupMidnightReset(); // Set up next day's reset
+    }, timeUntilMidnight + 1000); // Add 1 second buffer
+  }, []);  // Empty dependency array since this function is stable
+
+  // Reset app state (for midnight or debug)
+  const resetApp = useCallback(() => {
+    // Check if user completed any tasks in the last 24 hours
+    const now = new Date();
+    const lastDate = lastCompletedDate ? new Date(lastCompletedDate) : null;
+    const msIn24Hours = 24 * 60 * 60 * 1000;
+    const lastWasWithin24h = lastDate && (now - lastDate) < msIn24Hours;
+
+    // Reset streak if no tasks were completed in last 24 hours
+    if (!lastWasWithin24h && streak > 0) {
+      setStreak(0);
+      const newStreakData = { streak: 0, lastCompletedDate: null };
+      localStorage.setItem('streakData', JSON.stringify(newStreakData));
+    }
+
+    // Update today's date
+    const today = new Date().toISOString().split('T')[0];
+    setTodayDate(today);
+    
+    // Reset daily tasks data
+    setTasksSelectedToday(false);
+    setHasIncreasedStreakToday(false);
+
+    // Reset tasks UI
+    setSelectedTasks(['Tap', 'To', 'Show']);
+    setTasksDisabled(true);
+    setShowShareButton(false);
+    
+    // Reset all checkboxes to unchecked
+    setCheckedState([false, false, false]);
+    
+    // Reset visibility states
+    setShowInitialState(true);
+    setHeaderVisible(false);
+    setCtaVisible(false);
+    setVisibleTasks([false, false, false]);
+  }, [lastCompletedDate, streak]);
 
   // Load initial data from localStorage
   useEffect(() => {
@@ -64,7 +164,6 @@ function App() {
       // Restore today's tasks
       setSelectedTasks(dailyTasksData.tasks);
       setTasksDisabled(false);
-      setShowRevealButton(false);
       setShowShareButton(true);
       setTasksSelectedToday(true);
       
@@ -84,7 +183,7 @@ function App() {
 
     // Set up midnight reset
     setupMidnightReset();
-  }, []);
+  }, [setupMidnightReset]);
 
   // Save checked state whenever it changes
   useEffect(() => {
@@ -111,109 +210,7 @@ function App() {
       // If all tasks are unchecked and streak was already increased today, revert the streak
       revertStreak();
     }
-  }, [checkedState]);
-
-  // Function to update streak
-  const updateStreak = () => {
-    const today = new Date().toISOString().split('T')[0]; // e.g. "2025-05-02"
-    
-    if (lastCompletedDate !== today) {
-      const newStreak = streak + 1;
-      setStreak(newStreak);
-      setLastCompletedDate(today);
-      setHasIncreasedStreakToday(true);
-      
-      // Store streak data
-      const streakData = { streak: newStreak, lastCompletedDate: today };
-      localStorage.setItem('streakData', JSON.stringify(streakData));
-      
-      // Trigger confetti when streak is updated
-      handleStreakPop();
-      setShowConfetti(true);
-      
-      // Reset confetti after animation
-      setTimeout(() => {
-        setShowConfetti(false);
-      }, 4000);
-    }
-  };
-
-  // Function to revert streak if all tasks are unchecked
-  const revertStreak = () => {
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Only revert if streak was increased today
-    if (lastCompletedDate === today && hasIncreasedStreakToday) {
-      const newStreak = Math.max(0, streak - 1); // Ensure streak doesn't go below 0
-      setStreak(newStreak);
-      
-      // Reset lastCompletedDate if streak is now 0, otherwise keep the previous date
-      const newLastCompletedDate = newStreak === 0 ? null : 
-                                  (streak > 1 ? 
-                                    // If streak was > 1, set to yesterday
-                                    new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] 
-                                    : null);
-      
-      setLastCompletedDate(newLastCompletedDate);
-      setHasIncreasedStreakToday(false);
-      
-      // Store updated streak data
-      const streakData = { streak: newStreak, lastCompletedDate: newLastCompletedDate };
-      localStorage.setItem('streakData', JSON.stringify(streakData));
-    }
-  };
-
-  // Function to set up the midnight reset
-  const setupMidnightReset = () => {
-    const now = new Date();
-    const nextMidnight = new Date();
-    nextMidnight.setHours(24, 0, 0, 0);
-    const timeUntilMidnight = nextMidnight - now;
-    
-    setTimeout(() => {
-      resetApp();
-      setupMidnightReset(); // Set up next day's reset
-    }, timeUntilMidnight + 1000); // Add 1 second buffer
-  };
-
-  // Reset app state (for midnight or debug)
-  const resetApp = () => {
-    // Check if user completed any tasks in the last 24 hours
-    const now = new Date();
-    const lastDate = lastCompletedDate ? new Date(lastCompletedDate) : null;
-    const msIn24Hours = 24 * 60 * 60 * 1000;
-    const lastWasWithin24h = lastDate && (now - lastDate) < msIn24Hours;
-
-    // Reset streak if no tasks were completed in last 24 hours
-    if (!lastWasWithin24h && streak > 0) {
-      setStreak(0);
-      const newStreakData = { streak: 0, lastCompletedDate: null };
-      localStorage.setItem('streakData', JSON.stringify(newStreakData));
-    }
-
-    // Update today's date
-    const today = new Date().toISOString().split('T')[0];
-    setTodayDate(today);
-    
-    // Reset daily tasks data
-    setTasksSelectedToday(false);
-    setHasIncreasedStreakToday(false);
-
-    // Reset tasks UI
-    setSelectedTasks(['Tap', 'To', 'Show']);
-    setTasksDisabled(true);
-    setShowRevealButton(true);
-    setShowShareButton(false);
-    
-    // Reset all checkboxes to unchecked
-    setCheckedState([false, false, false]);
-    
-    // Reset visibility states
-    setShowInitialState(true);
-    setHeaderVisible(false);
-    setCtaVisible(false);
-    setVisibleTasks([false, false, false]);
-  };
+  }, [checkedState, hasIncreasedStreakToday, tasksDisabled, updateStreak, revertStreak]);
 
   // Select random tasks function
   const selectRandomTasks = () => {
@@ -266,7 +263,6 @@ function App() {
     // Update state
     setSelectedTasks(tasksList);
     setTasksDisabled(false);
-    setShowRevealButton(false);
     setShowShareButton(true);
     setTasksSelectedToday(true);
     
@@ -337,7 +333,6 @@ function App() {
     setHasIncreasedStreakToday(false);
     setSelectedTasks(['Tap', 'To', 'Show']);
     setTasksDisabled(true);
-    setShowRevealButton(true);
     setShowShareButton(false);
     setCheckedState([false, false, false]);
     
@@ -553,7 +548,7 @@ function App() {
 
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/icon.png`} alt="App icon" />
-                <p>Add to your home screen by tapping <span className="shareIcon apple"></span> <span>> Add to Home Screen</span> on your phone.</p>
+                <p>Add to your home screen by tapping <span className="shareIcon apple"></span> &nbsp;<span>> Add to Home Screen</span> on your phone.</p>
               </div>
 
               <div className="content credits">
