@@ -396,6 +396,10 @@ function App() {
         />
       }
 
+      <div className="desktop-banner">
+        <p>This app was designed for small screens, but should still work on a big screen!</p>
+      </div>
+
       <header>
         <button id="about" onClick={() => setOpen(true)}>About</button>
         <div 

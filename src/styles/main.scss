@@ -38,7 +38,7 @@ body {
     background: $black;
     margin: 0;
 
-    @media (max-width: 440px) {
+    @media (max-width: 512px) {
         padding: 0;
     }
 }
@@ -61,7 +61,7 @@ body {
     overflow: hidden;
     position: relative;
 
-    @media (max-width: 440px) {
+    @media (max-width: 512px) {
         border-radius: 0;
     }  
 
@@ -430,7 +430,22 @@ header {
 }
 
 
+.desktop-banner {
+    background: $darkpurple;
+    width: 100%;
+    padding: 16px;
 
+    @media (max-width: 512px) {
+        display: none;
+    }
+
+    p {
+        margin: 0;
+        color: $white;
+        text-align: center;
+        font-size: 12px;
+    }
+}
 
 
 
