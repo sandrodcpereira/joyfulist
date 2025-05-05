@@ -220,8 +220,10 @@ header {
     }
 }
 
-#root > div > canvas {
+#root > div > canvas.index-module_canvas__H2w7d {
     z-index: 30;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* sheet */
