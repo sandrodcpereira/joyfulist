@@ -133,7 +133,7 @@ header {
 
 .logo-container {
     display: flex;
-    padding: 0px 16px;
+    padding: 16px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -166,8 +166,9 @@ header {
     align-self: stretch;
     border-radius: 32px 32px 0px 0px;
     background: $yellow;
-    min-height: 411px;
     position: relative;
+    overflow: scroll;
+    height: fit-content;
 
     > div {
         display:flex;
