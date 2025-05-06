@@ -173,7 +173,10 @@ header {
 
         &:last-child {
             border-bottom: none;
-            padding-bottom: 40px;
+
+            @media (max-width: 512px) {
+                padding-bottom: 40px;
+            }
         }
     }
 
@@ -327,8 +330,6 @@ header {
     }    
 }
 
-
-
 /* initial state */ 
 
 .initialState {
@@ -363,7 +364,6 @@ header {
         border: none;
     }
 }
-
 
 /* tasks */
 
@@ -430,7 +430,6 @@ header {
         }
     }
 }
-
 
 .desktop-banner {
     background: $darkpurple;
