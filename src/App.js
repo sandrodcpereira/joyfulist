@@ -397,7 +397,7 @@ function App() {
       }
 
       <div className="desktop-banner">
-        <p>This app was designed for small screens, but should still work on a big screen!</p>
+        <p>Joyfulist is optimised for smaller screens, but still functional on larger displays!</p>
       </div>
 
       <header>
