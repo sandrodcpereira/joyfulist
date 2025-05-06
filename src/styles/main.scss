@@ -31,7 +31,6 @@ body {
     display: flex;
     width: 100%;
     height: 100%;
-    padding: 24px;
     justify-content: center;
     align-items: center;
     gap: 8px;
@@ -45,7 +44,6 @@ body {
 
 #root {
     display: flex;
-    max-width: 800px;  
     height: 100%;
     flex-direction: column;
     justify-content: flex-end;
@@ -53,7 +51,6 @@ body {
     gap: 16px;
     flex: 1 0 0;
     align-self: stretch;
-    border-radius: 32px;
     background-image: url(../../public/assets/bg.png);
     background-repeat: repeat;
     background-size: 32px 32px;
@@ -61,13 +58,11 @@ body {
     overflow: hidden;
     position: relative;
 
-    @media (max-width: 512px) {
-        border-radius: 0;
-    }  
-
     > div {
         width: 100%;
         height: 100%;
+        max-width: 800px;
+        margin: 0 auto;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -238,6 +233,13 @@ header {
 .react-modal-sheet-drag-indicator {
     background: $secondary !important;
 }
+
+.react-modal-sheet-backdrop {
+    &:active {
+        transform: none;
+    }
+}
+
 .react-modal-sheet-content > div {
 
     height: 100%;
@@ -434,6 +436,7 @@ header {
     background: $darkpurple;
     width: 100%;
     padding: 16px;
+    border-radius: 0 0 24px 24px;
 
     @media (max-width: 512px) {
         display: none;

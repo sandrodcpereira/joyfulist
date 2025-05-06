@@ -603,7 +603,7 @@ function App() {
             </div>
           </Sheet.Content>
         </Sheet.Container>
-        <Sheet.Backdrop />
+        <Sheet.Backdrop onTap={() => setOpen(false)} />
       </Sheet>
     </div>
   );
