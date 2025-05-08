@@ -469,7 +469,7 @@ function App() {
           }}
         >
           <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
-          <button>I'm ready for some joy!</button>
+          <button className="primary cta">I'm ready for some joy!</button>
           <p className="caption">Your daily joyful tasks are waiting</p>
         </div>
 
@@ -530,7 +530,6 @@ function App() {
 
         {/* CTA section - shown last */}
         <div 
-          className="cta"
           style={{
             opacity: ctaVisible ? 1 : 0,
             transition: 'opacity 0.3s ease-in',
@@ -540,6 +539,7 @@ function App() {
           {showShareButton && (
             <button 
               id="share" 
+              className="cta"
               onClick={(e) => {
                 e.stopPropagation(); // Prevent bubbling to panel
                 shareJoy();
@@ -644,48 +644,42 @@ function App() {
         isOpen={showWelcomeSheet} 
         detent="content-height"
         tweenConfig={{ ease: 'easeOut', duration: 0.4 }}
-        onClose={closeWelcomeSheet}
+        onClose={closeWelcomeSheet, selectRandomTasks}
       >
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>
             <div>
-              <div className="header">
-                <p className="caption">Welcome to Joyfulist!</p>
-                <div><button id="close-btn" onClick={closeWelcomeSheet}>Get Started</button></div>
-              </div>
 
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
                 <p>
-                  <span>Joyfulist</span> is your daily companion to help you find joy in small things!
+                  Welcome to <span>Joyfulist</span>
                 </p>
+
+                <p>Open the app every morning to get three prompts for little things you can do to bring a bit of <span>joy</span> into your life.</p>
+              </div>
+
+              
+
+              <div className="content">
+                <div className="horizontal">
+                  <img src={`${process.env.PUBLIC_URL}/assets/streak.png`} alt="Sparkle" />
+                  <p className="caption">Tick things off as you do them to get a joyful streak going!</p>
+                </div>
+
+                <div className="horizontal">
+                  <img src={`${process.env.PUBLIC_URL}/assets/icon-sm.png`} alt="Sparkle" />
+                  <p className="caption">Add to your home screen by tapping <span className="shareIcon apple"></span>&nbsp;&nbsp;<span>> Add to Home Screen</span>.</p>
+                </div>
+
               </div>
 
               <div className="content">
-                <div className="welcome-step">
-                  <div className="step-number">1</div>
-                  <p>Tap the panel to get your daily joyful tasks</p>
-                </div>
-                <div className="welcome-step">
-                  <div className="step-number">2</div>
-                  <p>Complete at least one task to start your joy streak</p>
-                </div>
-                <div className="welcome-step">
-                  <div className="step-number">3</div>
-                  <p>Come back every day to maintain your streak!</p>
-                </div>
-              </div>
-
-              <div className="content">
-                <p className="caption">Your streak resets if you miss a day, so make joy a habit!</p>
-              </div>
-
-              <div className="content welcome-footer">
                 <button onClick={() => {
           closeWelcomeSheet();
           selectRandomTasks();
-          }} className="welcome-button">Let's get started!</button>
+          }} className="welcome-button cta primary">I’m ready for some joy!</button>
               </div>
             </div>
           </Sheet.Content>

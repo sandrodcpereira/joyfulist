@@ -196,25 +196,41 @@ header {
             color: $white;
         }
     }
+}
 
-    .cta {
-        display: flex;
-        flex-direction: column;   
-        text-align: center;
-        gap: 8px;     
+button.cta {
+    width: 100%;
+    padding: 16px 32px;
+    align-items: center;
+    gap: 8px;
+    border-radius: 40px;
+    background: $dark;
+    color: $black;
+    font-size: 18px;
+    line-height: 28px;
+    border: none;
 
-        > button {
-            width: 100%;
-            padding: 16px;
-            align-items: center;
-            gap: 8px;
-            flex: 1 0 0;
-            border-radius: 40px;
-            background: $dark;
-            color: $black;
-            font-size: 18px;
-            line-height: 28px;
-            border: none;
+    &.primary {
+        background: $black;
+        color: $white;
+    }
+}
+
+.horizontal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+
+    > p {
+        text-align: left;
+        width: 100%;
+
+        > .shareIcon.apple {
+            width: 12px;
+            height: 12px;
+            background-size: 12px;
         }
     }
 }
@@ -250,7 +266,10 @@ header {
 
     &:last-child {
             border-bottom: none;
+            
+        @media (max-width: 512px){
             padding-bottom: 24px;
+        }
     }
 
     > div {
@@ -274,6 +293,15 @@ header {
             color: $purple;
             font-family: monotalic-narrow, sans-serif;
             font-weight: 700;
+        }
+
+        p > span {
+            font-size: 19px;
+            line-height: 18px;
+        }
+        p.caption > span {
+            font-size: 15px;
+            line-height: 18px;
         }
 
         .shareIcon {
@@ -350,19 +378,6 @@ header {
     }
 
     p {margin: 0;}
-
-    > button {
-        padding: 16px 32px;
-        align-items: center;
-        gap: 8px;
-        flex: 0 0 0;
-        border-radius: 40px;
-        background: $black;
-        color: $white;
-        font-size: 18px;
-        line-height: 28px;
-        border: none;
-    }
 }
 
 /* tasks */
