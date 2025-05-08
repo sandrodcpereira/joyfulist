@@ -19,6 +19,10 @@ function App() {
   const [tasksSelectedToday, setTasksSelectedToday] = useState(false);
   const [hasIncreasedStreakToday, setHasIncreasedStreakToday] = useState(false);
   
+  // Welcome sheet state
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const [showWelcomeSheet, setShowWelcomeSheet] = useState(false);
+  
   // State for animation control
   const [visibleTasks, setVisibleTasks] = useState([false, false, false]);
   const [showInitialState, setShowInitialState] = useState(true);
@@ -144,6 +148,16 @@ function App() {
     setStreak(parseInt(streakData.streak || '0', 10));
     setLastCompletedDate(streakData.lastCompletedDate || null);
     setHasIncreasedStreakToday(streakData.lastCompletedDate === today);
+
+    // Check if this is the first visit
+    const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+    if (!hasVisitedBefore) {
+      setIsFirstVisit(true);
+      // Set the welcome sheet to show after a slight delay
+      setTimeout(() => {
+        setShowWelcomeSheet(true);
+      }, 1000);
+    }
 
     // Load tasks.json
     const loadTasks = async () => {
@@ -326,6 +340,12 @@ function App() {
     }
   };
 
+  // Close welcome sheet and mark as visited
+  const closeWelcomeSheet = () => {
+    setShowWelcomeSheet(false);
+    localStorage.setItem('hasVisitedBefore', 'true');
+  };
+
   // Add a debug function to reset daily tasks
   const resetDailyTasks = () => {
     localStorage.removeItem('dailyTasksData');
@@ -343,6 +363,12 @@ function App() {
     setVisibleTasks([false, false, false]);
   };
 
+  // Add a debug function to reset first visit flag
+  const resetFirstVisit = () => {
+    localStorage.removeItem('hasVisitedBefore');
+    setIsFirstVisit(true);
+    setShowWelcomeSheet(true);
+  };
 
   // Toggle debug controls
   const toggleDebug = () => {
@@ -353,7 +379,6 @@ function App() {
   };
 
   // Streak pop function
-    
   const [isPopping, setIsPopping] = useState(false);
 
   const handleStreakPop = () => {
@@ -397,7 +422,7 @@ function App() {
       }
 
       <div className="desktop-banner">
-        <p>Joyfulist is optimised for smaller screens, but still functional on larger displays!</p>
+        <p>Joyfulist is optimised for smaller screens, but still 'm functional on larger displays!</p>
       </div>
 
       <header>
@@ -526,6 +551,7 @@ function App() {
         </div>
       </div>
 
+      {/* About Sheet */}
       <Sheet 
         isOpen={isOpen} 
         detent="content-height"
@@ -563,7 +589,6 @@ function App() {
               </div>
 
               <div className="debug">
-
                 <button onClick={() => {
                   resetApp();
                   setOpen(false);
@@ -590,6 +615,14 @@ function App() {
                   Reset today's tasks
                 </button>
 
+                <button onClick={() => {
+                  // Reset first visit flag
+                  resetFirstVisit();
+                  setOpen(false);
+                  }}>
+                  Show welcome again
+                </button>
+
                 <button 
                   onClick={() => {
                     if (window.confirm("Resetting will clear your streak and completed tasks. Are you sure?")) {
@@ -604,6 +637,63 @@ function App() {
           </Sheet.Content>
         </Sheet.Container>
         <Sheet.Backdrop onTap={() => setOpen(false)} />
+      </Sheet>
+
+      {/* Welcome Sheet - Only shows on first visit */}
+      <Sheet 
+        isOpen={showWelcomeSheet} 
+        detent="content-height"
+        tweenConfig={{ ease: 'easeOut', duration: 0.4 }}
+        onClose={closeWelcomeSheet}
+      >
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content>
+            <div>
+              <div className="header">
+                <p className="caption">Welcome to Joyfulist!</p>
+                <div><button id="close-btn" onClick={closeWelcomeSheet}>Get Started</button></div>
+              </div>
+
+              <div className="content">
+                <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
+                <p>
+                  <span>Joyfulist</span> is your daily companion to help you find joy in small things!
+                </p>
+              </div>
+
+              <div className="content">
+                <div className="welcome-step">
+                  <div className="step-number">1</div>
+                  <p>Tap the panel to get your daily joyful tasks</p>
+                </div>
+                <div className="welcome-step">
+                  <div className="step-number">2</div>
+                  <p>Complete at least one task to start your joy streak</p>
+                </div>
+                <div className="welcome-step">
+                  <div className="step-number">3</div>
+                  <p>Come back every day to maintain your streak!</p>
+                </div>
+              </div>
+
+              <div className="content">
+                <p className="caption">Your streak resets if you miss a day, so make joy a habit!</p>
+              </div>
+
+              <div className="content welcome-footer">
+                <button onClick={() => {
+          closeWelcomeSheet();
+          selectRandomTasks();
+          }} className="welcome-button">Let's get started!</button>
+              </div>
+            </div>
+          </Sheet.Content>
+        </Sheet.Container>
+        <Sheet.Backdrop onTap={() => {
+          closeWelcomeSheet();
+          selectRandomTasks();
+        }} />
       </Sheet>
     </div>
   );
