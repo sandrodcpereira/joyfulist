@@ -684,10 +684,7 @@ function App() {
             </div>
           </Sheet.Content>
         </Sheet.Container>
-        <Sheet.Backdrop onTap={() => {
-          closeWelcomeSheet();
-          selectRandomTasks();
-        }} />
+        <Sheet.Backdrop />
       </Sheet>
     </div>
   );
