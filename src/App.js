@@ -68,10 +68,10 @@ function App() {
       
       // Reset lastCompletedDate if streak is now 0, otherwise keep the previous date
       const newLastCompletedDate = newStreak === 0 ? null : 
-                                  (streak > 1 ? 
-                                    // If streak was > 1, set to yesterday
-                                    new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] 
-                                    : null);
+        (streak > 1 ? 
+          // If streak was > 1, set to yesterday
+          new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] 
+          : null);
       
       setLastCompletedDate(newLastCompletedDate);
       setHasIncreasedStreakToday(false);
@@ -324,7 +324,7 @@ function App() {
     if (navigator.share) {
       navigator.share({
         title: 'Joyfulist',
-        text: `I'm on a ${streak}-day joy streak with Joyfulist! My tasks for today are: ${selectedTasks.join(', ')}. What are yours?`,
+        text: `I'm on a ${streak}-day joy streak with Joyfulist! My suggestions for today are: ${selectedTasks.join(' ')} What are yours?`,
         url: window.location.href
       })
       .catch(error => console.log('Error sharing:', error));
@@ -392,7 +392,7 @@ function App() {
     const hasCompletedTask = checkedState.some(checked => checked === true);
     
     if (hasCompletedTask) {
-      return "Fantastic! Check again tomorrow for new tasks!";
+      return "Fantastic! Check again tomorrow for new suggestions!";
     } else if (streak === 0) {
       return "Tick at least one to get a streak going!";
     } else {
@@ -422,7 +422,7 @@ function App() {
       }
 
       <div className="desktop-banner">
-        <p>Joyfulist is optimised for smaller screens, but still 'm functional on larger displays!</p>
+        <p>Joyfulist is optimised for smaller screens, but still functional on larger displays!</p>
       </div>
 
       <header>
@@ -470,7 +470,7 @@ function App() {
         >
           <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
           <button className="primary cta">I'm ready for some joy!</button>
-          <p className="caption">Your daily joyful tasks are waiting</p>
+          <p className="caption">Your daily suggestions are waiting</p>
         </div>
 
         {/* Header - shown after initialState fades out */}
@@ -573,7 +573,7 @@ function App() {
                   <span>Joyfulist</span> was created by <span>Clare</span> and <a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a> in hopes to bring a little more joy into your life.
                 </p>
 
-                <p className="caption">All tasks were written by us. Get in touch if you have any you'd like us to add!</p>
+                <p className="caption">All suggestions were written by us. Get in touch if you have any you'd like us to add!</p>
               </div>
 
               <div className="content">
@@ -582,7 +582,7 @@ function App() {
               </div>
 
               <div className="content credits">
-                <p className="caption">This app doesn't track you in any way. Data like your streak count and completed tasks is saved on your device only — it is only accessible by you.</p>
+                <p className="caption">This app doesn't track you in any way. Data like your streak count and completed suggestion is saved on your device only — it is only accessible by you.</p>
 
                 <p className="caption">Developed using <a target="_blank" rel="noreferrer" href="https://temzasse.github.io/react-modal-sheet/">Modal Sheet</a>, <a target="_blank" rel="noreferrer" href="https://github.com/almond-bongbong/react-confetti-boom">Confetti Boom</a>, and Josh Comeau's <a target="_blank" rel="noreferrer" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
                 </p>
@@ -654,10 +654,10 @@ function App() {
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
                 <p>
-                  Welcome to <span>Joyfulist</span>
+                  Welcome to <span>Joyfulist</span>!
                 </p>
 
-                <p>Open the app every morning to get three prompts for little things you can do to bring a bit of <span>joy</span> into your life.</p>
+                <p>Open the app every morning to get three suggestions for little things you can do to bring a bit of <span>joy</span> into your life.</p>
               </div>
 
               
