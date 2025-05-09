@@ -392,7 +392,7 @@ function App() {
     const hasCompletedTask = checkedState.some(checked => checked === true);
     
     if (hasCompletedTask) {
-      return "Fantastic! Check again tomorrow for new suggestions!";
+      return "Neat! Come back tomorrow for new suggestions!";
     } else if (streak === 0) {
       return "Tick at least one to get a streak going!";
     } else {
@@ -582,7 +582,7 @@ function App() {
               </div>
 
               <div className="content credits">
-                <p className="caption">This app doesn't track you in any way. Data like your streak count and completed suggestion is saved on your device only — it is only accessible by you.</p>
+                <p className="caption">This app doesn't track you in any way. Data like your completed suggestions and streak count is saved on your device only — it is only accessible by you.</p>
 
                 <p className="caption">Developed using <a target="_blank" rel="noreferrer" href="https://temzasse.github.io/react-modal-sheet/">Modal Sheet</a>, <a target="_blank" rel="noreferrer" href="https://github.com/almond-bongbong/react-confetti-boom">Confetti Boom</a>, and Josh Comeau's <a target="_blank" rel="noreferrer" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
                 </p>
@@ -642,7 +642,9 @@ function App() {
       {/* Welcome Sheet - Only shows on first visit */}
       <Sheet 
         isOpen={showWelcomeSheet} 
+        className="welcomeSheet"
         detent="content-height"
+        disableDrag="true"
         tweenConfig={{ ease: 'easeOut', duration: 0.4 }}
         onClose={closeWelcomeSheet, selectRandomTasks}
       >
@@ -660,15 +662,13 @@ function App() {
                 <p>Open the app every morning to get three suggestions for little things you can do to bring a bit of <span>joy</span> into your life.</p>
               </div>
 
-              
-
-              <div className="content">
-                <div className="horizontal">
+              <div className="content horizontal">
+                <div>
                   <img src={`${process.env.PUBLIC_URL}/assets/streak.png`} alt="Sparkle" />
                   <p className="caption">Tick things off as you do them to get a joyful streak going!</p>
                 </div>
 
-                <div className="horizontal">
+                <div>
                   <img src={`${process.env.PUBLIC_URL}/assets/icon-sm.png`} alt="Sparkle" />
                   <p className="caption">Add to your home screen by tapping <span className="shareIcon apple"></span>&nbsp;&nbsp;<span>> Add to Home Screen</span>.</p>
                 </div>
@@ -677,9 +677,12 @@ function App() {
 
               <div className="content">
                 <button onClick={() => {
-          closeWelcomeSheet();
-          selectRandomTasks();
-          }} className="welcome-button cta primary">I’m ready for some joy!</button>
+                  closeWelcomeSheet();
+                  selectRandomTasks();
+                  }} 
+                  className="welcome-button cta primary">
+                    I’m ready for some joy!
+                  </button>
               </div>
             </div>
           </Sheet.Content>

@@ -216,21 +216,25 @@ button.cta {
     }
 }
 
-.horizontal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.react-modal-sheet-content .horizontal {
     gap: 16px;
-    align-self: stretch;
 
-    > p {
-        text-align: left;
-        width: 100%;
+    > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        align-self: stretch;
 
-        > .shareIcon.apple {
-            width: 12px;
-            height: 12px;
-            background-size: 12px;
+        > p {
+            text-align: left;
+            width: 100%;
+
+            > .shareIcon.apple {
+                width: 12px;
+                height: 12px;
+                background-size: 12px;
+            }
         }
     }
 }
@@ -466,7 +470,15 @@ button.cta {
 
 
 
+.welcomeSheet {
+    > div > div > .react-modal-sheet-header {
+        display: none !important;
+    }
 
+    .content:first-child {
+        padding-top: 40px;
+    }
+}
 
 
 

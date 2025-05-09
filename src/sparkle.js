@@ -116,44 +116,5 @@ const Sparkles = ({ children, color, count = 5, minSize = 10, maxSize = 20, ...d
   );
 };
 
-// Example usage component (uncomment to use)
-/*
-function SparkleDemo() {
-  return (
-    <div className="flex flex-col items-center justify-center p-8 min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Sparkle Effect Demo</h1>
-      
-      <div className="mb-8">
-        <Sparkles>
-          <span className="text-2xl font-bold text-purple-600">
-            ✨ This text has sparkles! ✨
-          </span>
-        </Sparkles>
-      </div>
-      
-      <div className="mb-8">
-        <Sparkles color="#FF5722" count={8} minSize={15} maxSize={25}>
-          <span className="text-xl font-bold bg-orange-100 p-4 rounded-lg">
-            Custom orange sparkles
-          </span>
-        </Sparkles>
-      </div>
-      
-      <div className="p-6 bg-white rounded-lg shadow-md">
-        <p className="mb-4">
-          You can wrap <Sparkles><span className="font-bold">any element</span></Sparkles> with sparkles!
-        </p>
-        
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-          <Sparkles count={3}>
-            Sparkly Button
-          </Sparkles>
-        </button>
-      </div>
-    </div>
-  );
-}
-*/
-
 // Export the Sparkles component as the default export
 export default Sparkles;
