@@ -578,7 +578,7 @@ function App() {
 
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/icon.png`} alt="App icon" />
-                <p>Add to your home screen by tapping <span className="shareIcon apple"></span> &nbsp;<span>> Add to Home Screen</span> on your phone.</p>
+                <p>Add to your home screen by tapping <span className="no-wrap"><img src={`${process.env.PUBLIC_URL}/assets/icon-share.png`} className="share-icon apple" alt="Share icon" />  > Add to Home Screen</span> on your phone.</p>
               </div>
 
               <div className="content credits">
@@ -665,7 +665,7 @@ function App() {
                 </div>
                 <div>
                   <img src={`${process.env.PUBLIC_URL}/assets/icon-sm.png`} alt="Sparkle" />
-                  <p className="caption">Add to your home screen by tapping <span className="shareIcon apple"></span>&nbsp;&nbsp;<span>> Add to Home Screen</span>.</p>
+                  <p className="caption">Add to your home screen by tapping <span className="no-wrap"><img src={`${process.env.PUBLIC_URL}/assets/icon-share.png`} className="share-icon apple" alt="Share icon" />  > Add to Home Screen</span>.</p>
                 </div>
               </div>
               <div className="content">

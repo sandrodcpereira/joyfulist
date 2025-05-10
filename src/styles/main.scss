@@ -81,7 +81,6 @@ button {
     font-size: 14px;
     border-radius: 16px;
     border: none;
-
     transition: transform .1s cubic-bezier(0.51, 1.66, 0.68, 0.97);
 
     &:active {
@@ -122,8 +121,6 @@ header {
     border-radius: 16px;
     border: none;
     }
-
-
 }
 
 .logo-container {
@@ -216,39 +213,9 @@ button.cta {
     }
 }
 
-.react-modal-sheet-content .horizontal {
-    gap: 16px;
-
-    > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 16px;
-        align-self: stretch;
-
-        > p {
-            text-align: left;
-            width: 100%;
-
-            > .shareIcon.apple {
-                width: 12px;
-                height: 12px;
-                background-size: 12px;
-            }
-        }
-    }
-}
-
-#root > div > canvas.index-module_canvas__H2w7d {
-    z-index: 30;
-    width: 100% !important;
-    height: 100% !important;
-}
-
 /* sheet */
 
 .react-modal-sheet-container {
-
   background: $yellow !important;
   border-radius: 32px 32px 0 0 !important;
 }
@@ -308,17 +275,11 @@ button.cta {
             line-height: 18px;
         }
 
-        .shareIcon {
+        .share-icon {
             display: inline-block;
             width: 16px;
             height: 16px;
-            background-position: center center;
-            background-size: 16px;
-            vertical-align: middle;
-
-            &.apple {
-                background-image: url(../../public/assets/icon-share.png);
-            }
+            vertical-align: baseline;
         }
 
         &.header {
@@ -360,6 +321,34 @@ button.cta {
             }
         }
     }    
+}
+
+.react-modal-sheet-content .horizontal {
+    gap: 16px;
+
+    > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        align-self: stretch;
+
+        > p {
+            text-align: left;
+            width: 100%;
+
+            > span > .share-icon.apple {
+                width: 12px;
+                height: 12px;
+            }
+        }
+    }
+}
+
+#root > div > canvas.index-module_canvas__H2w7d {
+    z-index: 30;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* initial state */ 
@@ -462,6 +451,10 @@ button.cta {
             background-image: url(../../public/assets/tick.png);
         }
     }
+}
+
+.no-wrap {
+    white-space: nowrap;
 }
 
 .desktop-banner {
