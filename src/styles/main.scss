@@ -406,7 +406,7 @@ button.cta {
         align-self: stretch;
         border-bottom: 1px solid $border;
         position: relative;
-        transition: transform .1s cubic-bezier(0.51, 1.66, 0.68, 0.97);
+        transition: transform 1s cubic-bezier(0.51, 1.66, 0.68, 0.97);
 
         &:has(label:active) {
             transform: scale(0.98);
