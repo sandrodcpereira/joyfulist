@@ -36,11 +36,11 @@ const Sparkles = ({ children, color, count = 5, minSize = 10, maxSize = 20, ...d
     // Check if user prefers reduced motion
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     prefersReducedMotion.current = mediaQuery.matches;
-
+    
     // Skip the effect if user prefers reduced motion
     if (prefersReducedMotion.current) return;
-
-    // Create an array of random sparkle objects
+    
+    // Create a sparkle object
     const createSparkle = () => {
       return {
         id: String(random(10000, 99999)),
@@ -56,11 +56,11 @@ const Sparkles = ({ children, color, count = 5, minSize = 10, maxSize = 20, ...d
         },
       };
     };
-
+    
     // Initialize sparkles
     const initialSparkles = Array.from({ length: count }, () => createSparkle());
     setSparkles(initialSparkles);
-
+    
     // Set up intervals to randomly remove and add sparkles
     const sparkleInterval = setInterval(() => {
       const now = Date.now();
@@ -74,10 +74,10 @@ const Sparkles = ({ children, color, count = 5, minSize = 10, maxSize = 20, ...d
         return [...remaining, createSparkle()];
       });
     }, 500);
-
+    
     return () => clearInterval(sparkleInterval);
   }, [color, count, minSize, maxSize]);
-
+  
   return (
     <span
       style={{
@@ -96,8 +96,7 @@ const Sparkles = ({ children, color, count = 5, minSize = 10, maxSize = 20, ...d
       ))}
       <span style={{ position: 'relative', zIndex: 1 }}>{children}</span>
       
-      {/* Add the necessary CSS for sparkle animation */}
-      <style jsx>{`
+      <style>{`
         @keyframes sparkle-animation {
           0% {
             transform: scale(0) rotate(0deg);

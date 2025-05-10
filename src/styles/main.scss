@@ -384,6 +384,20 @@ button.cta {
     p {margin: 0;}
 }
 
+/* welcome state */
+
+
+.welcomeSheet {
+    > div > div > .react-modal-sheet-header {
+        display: none !important;
+    }
+
+    .content:first-child {
+        padding-top: 40px;
+    }
+}
+
+
 /* tasks */
 
 #tasks {
@@ -467,19 +481,3 @@ button.cta {
         font-size: 12px;
     }
 }
-
-
-
-.welcomeSheet {
-    > div > div > .react-modal-sheet-header {
-        display: none !important;
-    }
-
-    .content:first-child {
-        padding-top: 40px;
-    }
-}
-
-
-
-

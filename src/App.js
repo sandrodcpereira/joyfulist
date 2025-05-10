@@ -639,7 +639,6 @@ function App() {
         <Sheet.Backdrop onTap={() => setOpen(false)} />
       </Sheet>
 
-      {/* Welcome Sheet - Only shows on first visit */}
       <Sheet 
         isOpen={showWelcomeSheet} 
         className="welcomeSheet"
@@ -652,29 +651,23 @@ function App() {
           <Sheet.Header />
           <Sheet.Content>
             <div>
-
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
                 <p>
                   Welcome to <span>Joyfulist</span>!
                 </p>
-
                 <p>Open the app every morning to get three suggestions for little things you can do to bring a bit of <span>joy</span> into your life.</p>
               </div>
-
               <div className="content horizontal">
                 <div>
                   <img src={`${process.env.PUBLIC_URL}/assets/streak.png`} alt="Sparkle" />
                   <p className="caption">Tick things off as you do them to get a joyful streak going!</p>
                 </div>
-
                 <div>
                   <img src={`${process.env.PUBLIC_URL}/assets/icon-sm.png`} alt="Sparkle" />
                   <p className="caption">Add to your home screen by tapping <span className="shareIcon apple"></span>&nbsp;&nbsp;<span>> Add to Home Screen</span>.</p>
                 </div>
-
               </div>
-
               <div className="content">
                 <button onClick={() => {
                   closeWelcomeSheet();
@@ -689,6 +682,7 @@ function App() {
         </Sheet.Container>
         <Sheet.Backdrop />
       </Sheet>
+
     </div>
   );
 }
