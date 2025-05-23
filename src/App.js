@@ -95,43 +95,41 @@ function App() {
     }, timeUntilMidnight + 1000); // Add 1 second buffer
   }, []);  // Empty dependency array since this function is stable
 
-  // Reset app state (for midnight or debug)
-  const resetApp = useCallback(() => {
-    // Check if user completed any tasks in the last 24 hours
-    const now = new Date();
-    const lastDate = lastCompletedDate ? new Date(lastCompletedDate) : null;
-    const msIn24Hours = 24 * 60 * 60 * 1000;
-    const lastWasWithin24h = lastDate && (now - lastDate) < msIn24Hours;
+// Reset app state (for midnight or debug)
+const resetApp = useCallback(() => {
+  // Check if any tasks are currently marked as completed (checked)
+  const anyTaskCompleted = checkedState.some(checked => checked === true);
 
-    // Reset streak if no tasks were completed in last 24 hours
-    if (!lastWasWithin24h && streak > 0) {
-      setStreak(0);
-      const newStreakData = { streak: 0, lastCompletedDate: null };
-      localStorage.setItem('streakData', JSON.stringify(newStreakData));
-    }
+  // Reset streak if no tasks are completed
+  if (!anyTaskCompleted && streak > 0) {
+    setStreak(0);
+    setLastCompletedDate(null);
+    const newStreakData = { streak: 0, lastCompletedDate: null };
+    localStorage.setItem('streakData', JSON.stringify(newStreakData));
+  }
 
-    // Update today's date
-    const today = new Date().toISOString().split('T')[0];
-    setTodayDate(today);
-    
-    // Reset daily tasks data
-    setTasksSelectedToday(false);
-    setHasIncreasedStreakToday(false);
+  // Update today's date
+  const today = new Date().toISOString().split('T')[0];
+  setTodayDate(today);
+  
+  // Reset daily tasks data
+  setTasksSelectedToday(false);
+  setHasIncreasedStreakToday(false);
 
-    // Reset tasks UI
-    setSelectedTasks(['Tap', 'To', 'Show']);
-    setTasksDisabled(true);
-    setShowShareButton(false);
-    
-    // Reset all checkboxes to unchecked
-    setCheckedState([false, false, false]);
-    
-    // Reset visibility states
-    setShowInitialState(true);
-    setHeaderVisible(false);
-    setCtaVisible(false);
-    setVisibleTasks([false, false, false]);
-  }, [lastCompletedDate, streak]);
+  // Reset tasks UI
+  setSelectedTasks(['Tap', 'To', 'Show']);
+  setTasksDisabled(true);
+  setShowShareButton(false);
+  
+  // Reset all checkboxes to unchecked
+  setCheckedState([false, false, false]);
+  
+  // Reset visibility states
+  setShowInitialState(true);
+  setHeaderVisible(false);
+  setCtaVisible(false);
+  setVisibleTasks([false, false, false]);
+}, [checkedState, streak]); // Add checkedState as dependency
 
   // Load initial data from localStorage
   useEffect(() => {
