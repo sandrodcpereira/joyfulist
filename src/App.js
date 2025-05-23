@@ -580,7 +580,7 @@ const resetApp = useCallback(() => {
               </div>
 
               <div className="content credits">
-                <p className="caption">This app doesn't track you in any way. Data like your completed suggestions and streak count is saved on your device only — it is only accessible by you.</p>
+                <p className="caption">This app doesn't track you in any way. Data like your completed suggestions and streak count is saved on your device only.</p>
 
                 <p className="caption">Developed using <a target="_blank" rel="noreferrer" href="https://temzasse.github.io/react-modal-sheet/">Modal Sheet</a>, <a target="_blank" rel="noreferrer" href="https://github.com/almond-bongbong/react-confetti-boom">Confetti Boom</a>, and Josh Comeau's <a target="_blank" rel="noreferrer" href="https://www.joshwcomeau.com/react/animated-sparkles-in-react/">Animated Sparkles</a>.
                 </p>
