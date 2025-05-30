@@ -82,6 +82,51 @@ function App() {
     }
   }, [lastCompletedDate, hasIncreasedStreakToday, streak]);
 
+  // Reset app state (for midnight or debug)
+  const resetApp = useCallback(() => {
+    // Get the current checkbox states from localStorage at reset time
+    const dailyData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Check if any tasks are completed based on stored data
+    let anyTaskCompleted = false;
+    if (dailyData.date === today && dailyData.checkedState) {
+      anyTaskCompleted = dailyData.checkedState.some(checked => checked === true);
+    }
+
+    // Reset streak if no tasks are completed at midnight
+    if (!anyTaskCompleted && streak > 0) {
+      setStreak(0);
+      setLastCompletedDate(null);
+      const newStreakData = { streak: 0, lastCompletedDate: null };
+      localStorage.setItem('streakData', JSON.stringify(newStreakData));
+    }
+
+    // Update today's date
+    setTodayDate(today);
+    
+    // Reset daily tasks data
+    setTasksSelectedToday(false);
+    setHasIncreasedStreakToday(false);
+
+    // Reset tasks UI
+    setSelectedTasks(['Tap', 'To', 'Show']);
+    setTasksDisabled(true);
+    setShowShareButton(false);
+    
+    // Reset all checkboxes to unchecked
+    setCheckedState([false, false, false]);
+    
+    // Reset visibility states
+    setShowInitialState(true);
+    setHeaderVisible(false);
+    setCtaVisible(false);
+    setVisibleTasks([false, false, false]);
+    
+    // Clear today's daily tasks data since it's a new day
+    localStorage.removeItem('dailyTasksData');
+  }, [streak]); // Only depend on streak, not checkedState
+
   // Function to set up the midnight reset
   const setupMidnightReset = useCallback(() => {
     const now = new Date();
@@ -89,47 +134,33 @@ function App() {
     nextMidnight.setHours(24, 0, 0, 0);
     const timeUntilMidnight = nextMidnight - now;
     
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
+      // Check completion status right before reset
+      const dailyData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Only check streak reset if we have today's data
+      if (dailyData.date === today) {
+        const anyCompleted = dailyData.checkedState?.some(checked => checked === true) || false;
+        
+        if (!anyCompleted) {
+          // Reset streak immediately
+          setStreak(0);
+          setLastCompletedDate(null);
+          localStorage.setItem('streakData', JSON.stringify({ streak: 0, lastCompletedDate: null }));
+        }
+      }
+      
+      // Reset app for new day
       resetApp();
-      setupMidnightReset(); // Set up next day's reset
+      
+      // Set up next day's reset
+      setupMidnightReset();
     }, timeUntilMidnight + 1000); // Add 1 second buffer
-  }, []);  // Empty dependency array since this function is stable
-
-// Reset app state (for midnight or debug)
-const resetApp = useCallback(() => {
-  // Check if any tasks are currently marked as completed (checked)
-  const anyTaskCompleted = checkedState.some(checked => checked === true);
-
-  // Reset streak if no tasks are completed
-  if (!anyTaskCompleted && streak > 0) {
-    setStreak(0);
-    setLastCompletedDate(null);
-    const newStreakData = { streak: 0, lastCompletedDate: null };
-    localStorage.setItem('streakData', JSON.stringify(newStreakData));
-  }
-
-  // Update today's date
-  const today = new Date().toISOString().split('T')[0];
-  setTodayDate(today);
-  
-  // Reset daily tasks data
-  setTasksSelectedToday(false);
-  setHasIncreasedStreakToday(false);
-
-  // Reset tasks UI
-  setSelectedTasks(['Tap', 'To', 'Show']);
-  setTasksDisabled(true);
-  setShowShareButton(false);
-  
-  // Reset all checkboxes to unchecked
-  setCheckedState([false, false, false]);
-  
-  // Reset visibility states
-  setShowInitialState(true);
-  setHeaderVisible(false);
-  setCtaVisible(false);
-  setVisibleTasks([false, false, false]);
-}, [checkedState, streak]); // Add checkedState as dependency
+    
+    // Return cleanup function
+    return () => clearTimeout(timeoutId);
+  }, [resetApp]);
 
   // Load initial data from localStorage
   useEffect(() => {
@@ -191,24 +222,29 @@ const resetApp = useCallback(() => {
       
       // Show tasks with animation
       setVisibleTasks([true, true, true]);
+    } else if (dailyTasksData.date && dailyTasksData.date !== today) {
+      // Data is from previous day - clean it up
+      localStorage.removeItem('dailyTasksData');
     }
 
-    // Set up midnight reset
-    setupMidnightReset();
+    // Set up midnight reset and store cleanup function
+    const cleanup = setupMidnightReset();
+    return cleanup;
   }, [setupMidnightReset]);
 
-  // Save checked state whenever it changes
+  // Enhanced localStorage saving - save checkbox states more reliably
   useEffect(() => {
     if (!tasksDisabled && tasksSelectedToday) {
-      const dailyTasksData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
-      if (dailyTasksData.date === todayDate) {
-        localStorage.setItem('dailyTasksData', JSON.stringify({
-          ...dailyTasksData,
-          checkedState: checkedState
-        }));
-      }
+      const today = new Date().toISOString().split('T')[0];
+      const dailyTasksData = {
+        date: today,
+        tasks: selectedTasks,
+        checkedState: checkedState,
+        hasCompletions: checkedState.some(checked => checked === true)
+      };
+      localStorage.setItem('dailyTasksData', JSON.stringify(dailyTasksData));
     }
-  }, [checkedState, tasksDisabled, tasksSelectedToday, todayDate]);
+  }, [checkedState, tasksDisabled, tasksSelectedToday, selectedTasks]);
 
   // Update streak based on checked states
   useEffect(() => {
@@ -268,7 +304,8 @@ const resetApp = useCallback(() => {
       localStorage.setItem('dailyTasksData', JSON.stringify({
         date: today,
         tasks: tasksList,
-        checkedState: [false, false, false]
+        checkedState: [false, false, false],
+        hasCompletions: false
       }));
     }
 
@@ -672,7 +709,7 @@ const resetApp = useCallback(() => {
                   selectRandomTasks();
                   }} 
                   className="welcome-button cta primary">
-                    I’m ready for some joy!
+                    I'm ready for some joy!
                   </button>
               </div>
             </div>
