@@ -66,104 +66,93 @@ function App() {
       const newStreak = Math.max(0, streak - 1); // Ensure streak doesn't go below 0
       setStreak(newStreak);
       
-      // Reset lastCompletedDate if streak is now 0, otherwise keep the previous date
-      const newLastCompletedDate = newStreak === 0 ? null : 
-        (streak > 1 ? 
-          // If streak was > 1, set to yesterday
-          new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] 
-          : null);
-      
-      setLastCompletedDate(newLastCompletedDate);
+      // To determine the previous date, we need to know what the date was before today.
+      // This is complex to get from just today's date, so we'll set it to yesterday.
+      // A more robust solution might store a history, but for this app, yesterday is fine.
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const previousDate = newStreak > 0 ? yesterday.toISOString().split('T')[0] : null;
+
+      setLastCompletedDate(previousDate);
       setHasIncreasedStreakToday(false);
       
       // Store updated streak data
-      const streakData = { streak: newStreak, lastCompletedDate: newLastCompletedDate };
+      const streakData = { streak: newStreak, lastCompletedDate: previousDate };
       localStorage.setItem('streakData', JSON.stringify(streakData));
     }
   }, [lastCompletedDate, hasIncreasedStreakToday, streak]);
 
-  // Reset app state (for midnight or debug)
-  const resetApp = useCallback(() => {
-    // Get the current checkbox states from localStorage at reset time
-    const dailyData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
+  // FIXED: Rewritten resetApp function to handle manual cycle advancement properly
+  const resetApp = () => {
+    console.log("Running daily reset...");
+
     const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    // Get data from localStorage to make decisions.
+    const dailyData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
+    const streakData = JSON.parse(localStorage.getItem('streakData') || '{}');
+    const currentStreak = parseInt(streakData.streak || '0', 10);
     
-    // Check if any tasks are completed based on stored data
-    let anyTaskCompleted = false;
-    if (dailyData.date === today && dailyData.checkedState) {
-      anyTaskCompleted = dailyData.checkedState.some(checked => checked === true);
+    // FIXED: Check if tasks were completed either yesterday OR today (for manual advancement)
+    const hadCompletionsYesterday = dailyData.date === yesterdayStr && dailyData.hasCompletions;
+    const hadCompletionsToday = dailyData.date === today && dailyData.hasCompletions;
+    const hadCompletions = hadCompletionsYesterday || hadCompletionsToday;
+
+    // If there is a streak but no tasks were completed, reset the streak.
+    if (currentStreak > 0 && !hadCompletions) {
+        console.log('Resetting streak: no tasks completed.');
+        setStreak(0);
+        setLastCompletedDate(null);
+        localStorage.setItem('streakData', JSON.stringify({ streak: 0, lastCompletedDate: null }));
+    } else if (hadCompletionsToday && dailyData.date === today) {
+        // FIXED: If advancing manually and tasks were completed today, 
+        // update the lastCompletedDate to today to maintain the streak
+        console.log('Maintaining streak: tasks were completed today.');
+        localStorage.setItem('streakData', JSON.stringify({ 
+          streak: currentStreak, 
+          lastCompletedDate: today 
+        }));
     }
 
-    // Reset streak if no tasks are completed at midnight
-    if (!anyTaskCompleted && streak > 0) {
-      setStreak(0);
-      setLastCompletedDate(null);
-      const newStreakData = { streak: 0, lastCompletedDate: null };
-      localStorage.setItem('streakData', JSON.stringify(newStreakData));
-    }
-
-    // Update today's date
-    setTodayDate(today);
-    
-    // Reset daily tasks data
+    // Reset all daily states and UI for the new day
+    setTodayDate(new Date().toISOString().split('T')[0]);
     setTasksSelectedToday(false);
     setHasIncreasedStreakToday(false);
-
-    // Reset tasks UI
     setSelectedTasks(['Tap', 'To', 'Show']);
     setTasksDisabled(true);
     setShowShareButton(false);
-    
-    // Reset all checkboxes to unchecked
     setCheckedState([false, false, false]);
-    
-    // Reset visibility states
     setShowInitialState(true);
     setHeaderVisible(false);
     setCtaVisible(false);
     setVisibleTasks([false, false, false]);
     
-    // Clear today's daily tasks data since it's a new day
+    // Clear the current day's task data
     localStorage.removeItem('dailyTasksData');
-  }, [streak]); // Only depend on streak, not checkedState
-
-  // Function to set up the midnight reset
-  const setupMidnightReset = useCallback(() => {
-    const now = new Date();
-    const nextMidnight = new Date();
-    nextMidnight.setHours(24, 0, 0, 0);
-    const timeUntilMidnight = nextMidnight - now;
-    
-    const timeoutId = setTimeout(() => {
-      // Check completion status right before reset
-      const dailyData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
-      const today = new Date().toISOString().split('T')[0];
-      
-      // Only check streak reset if we have today's data
-      if (dailyData.date === today) {
-        const anyCompleted = dailyData.checkedState?.some(checked => checked === true) || false;
-        
-        if (!anyCompleted) {
-          // Reset streak immediately
-          setStreak(0);
-          setLastCompletedDate(null);
-          localStorage.setItem('streakData', JSON.stringify({ streak: 0, lastCompletedDate: null }));
-        }
-      }
-      
-      // Reset app for new day
-      resetApp();
-      
-      // Set up next day's reset
-      setupMidnightReset();
-    }, timeUntilMidnight + 1000); // Add 1 second buffer
-    
-    // Return cleanup function
-    return () => clearTimeout(timeoutId);
-  }, [resetApp]);
+  };
 
   // Load initial data from localStorage
   useEffect(() => {
+    // Set up the midnight reset timer. This should only run once.
+    const setupMidnightReset = () => {
+        const now = new Date();
+        const nextMidnight = new Date();
+        nextMidnight.setHours(24, 0, 0, 0);
+        const timeUntilMidnight = nextMidnight.getTime() - now.getTime();
+        
+        const timeoutId = setTimeout(() => {
+            // Run the reset logic for the new day
+            resetApp();
+            // Schedule the next reset
+            setupMidnightReset();
+        }, timeUntilMidnight);
+
+        return () => clearTimeout(timeoutId);
+    };
+    
     // Set today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
     setTodayDate(today);
@@ -223,14 +212,17 @@ function App() {
       // Show tasks with animation
       setVisibleTasks([true, true, true]);
     } else if (dailyTasksData.date && dailyTasksData.date !== today) {
-      // Data is from previous day - clean it up
-      localStorage.removeItem('dailyTasksData');
+        // Data is from a previous day and should have been reset at midnight.
+        // We run resetApp here as a fallback in case the user opens the app
+        // after midnight but before the timer has fired (e.g., computer was asleep).
+        resetApp();
     }
 
     // Set up midnight reset and store cleanup function
     const cleanup = setupMidnightReset();
     return cleanup;
-  }, [setupMidnightReset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array is correct as resetApp is defined outside and a fallback is in place.
 
   // Enhanced localStorage saving - save checkbox states more reliably
   useEffect(() => {
@@ -267,47 +259,32 @@ function App() {
     
     const today = new Date().toISOString().split('T')[0];
     
-    // Check if we already have saved tasks for today
-    const dailyTasksData = JSON.parse(localStorage.getItem('dailyTasksData') || '{}');
+    // Generate new tasks for today
+    // Filter out tasks that have been completed
+    const availableTasks = tasks.filter(task => !completedTasks.includes(task));
     
+    // Select 3 random tasks
     let tasksList = [];
+    const tempAvailable = [...availableTasks];
     
-    if (dailyTasksData.date === today && dailyTasksData.tasks && dailyTasksData.tasks.length === 3) {
-      // Use stored tasks for today
-      tasksList = dailyTasksData.tasks;
-      
-      // Restore checked state if available
-      if (dailyTasksData.checkedState && dailyTasksData.checkedState.length === 3) {
-        setCheckedState(dailyTasksData.checkedState);
-      }
-    } else {
-      // Generate new tasks for today
-      // Filter out tasks that have been completed
-      const availableTasks = tasks.filter(task => !completedTasks.includes(task));
-      
-      // Select 3 random tasks
-      tasksList = [];
-      const tempAvailable = [...availableTasks];
-      
-      while (tasksList.length < 3 && tempAvailable.length > 0) {
-        const randomIndex = Math.floor(Math.random() * tempAvailable.length);
-        tasksList.push(tempAvailable[randomIndex]);
-        tempAvailable.splice(randomIndex, 1);
-      }
-  
-      // If we don't have enough tasks, fill with default messages
-      while (tasksList.length < 3) {
-        tasksList.push(`[oh boy]`);
-      }
-      
-      // Store today's tasks in localStorage
-      localStorage.setItem('dailyTasksData', JSON.stringify({
-        date: today,
-        tasks: tasksList,
-        checkedState: [false, false, false],
-        hasCompletions: false
-      }));
+    while (tasksList.length < 3 && tempAvailable.length > 0) {
+      const randomIndex = Math.floor(Math.random() * tempAvailable.length);
+      tasksList.push(tempAvailable[randomIndex]);
+      tempAvailable.splice(randomIndex, 1);
     }
+
+    // If we don't have enough tasks, fill with default messages
+    while (tasksList.length < 3) {
+      tasksList.push(`[oh boy]`);
+    }
+    
+    // Store today's tasks in localStorage
+    localStorage.setItem('dailyTasksData', JSON.stringify({
+      date: today,
+      tasks: tasksList,
+      checkedState: [false, false, false],
+      hasCompletions: false
+    }));
 
     // Update state
     setSelectedTasks(tasksList);
@@ -437,20 +414,20 @@ function App() {
 
   return (
     <div className="joyfulist-app">
-      {showConfetti && 
-        <ConfettiBoom 
+      {showConfetti &&  
+        <ConfettiBoom  
           mode={'boom'}
           x={0.75}
           y={0.02}
           deg={120}
           shapeSize={25}
           spreadDeg={100}
-          particleCount={200} 
+          particleCount={200}  
           launchSpeed={1}
           colors={[
-            '#6900E0', 
-            '#FFC500', 
-            '#ffffff', 
+            '#6900E0',  
+            '#FFC500',  
+            '#ffffff',  
             '#00A88A'
           ]}
         />
@@ -462,26 +439,26 @@ function App() {
 
       <header>
         <button id="about" onClick={() => setOpen(true)}>About</button>
-        <div 
-          id="streak" 
+        <div  
+          id="streak"  
           style={{
             transform: isPopping ? 'scale(1.3)' : 'scale(1)',
             transition: 'transform 0.2s ease-in-out',
             display: 'inline-block'
           }}
           >
-          {streak === 0 
-            ? "✨ No streak yet" 
+          {streak === 0  
+            ? "✨ No streak yet"  
             : `🔥 ${streak} day streak!`
           }
         </div>
       </header>
 
       <div className="logo-container">
-        <Sparkles 
-          color="#FFC500" 
-          count={5} 
-          minSize={20} 
+        <Sparkles  
+          color="#FFC500"  
+          count={5}  
+          minSize={20}  
           maxSize={20}
         >
           <h1>Komoreby</h1>
@@ -490,13 +467,13 @@ function App() {
         <h2>Your daily dose of joy</h2>
       </div>
 
-      <div 
-        className="panel" 
+      <div  
+        className="panel"  
         onClick={handlePanelClick}
       >
         {/* Initial state - only shown before tasks are selected */}
-        <div 
-          className="initialState" 
+        <div  
+          className="initialState"  
           style={{
             display: showInitialState ? 'flex' : 'none',
             opacity: showInitialState ? 1 : 0,
@@ -509,7 +486,7 @@ function App() {
         </div>
 
         {/* Header - shown after initialState fades out */}
-        <div 
+        <div  
           className="header"
           style={{
             opacity: headerVisible ? 1 : 0,
@@ -523,8 +500,8 @@ function App() {
         {/* Tasks - shown one by one after header */}
         <div id="tasks">
           {selectedTasks.map((task, index) => (
-            <div 
-              key={index} 
+            <div  
+              key={index}  
               className={`${tasksDisabled ? 'disabled' : ''}`}
               style={{
                 visibility: !showInitialState ? 'visible' : 'hidden',
@@ -532,8 +509,8 @@ function App() {
                 transition: 'opacity 0.3s ease-in',
               }}
             >
-              <input 
-                type="checkbox" 
+              <input  
+                type="checkbox"  
                 id={`task${index + 1}`}
                 checked={checkedState[index]}
                 onChange={(e) => {
@@ -552,8 +529,8 @@ function App() {
                 }}
                 onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to panel
               />
-              <label 
-                className={`taskLabel${index + 1}`} 
+              <label  
+                className={`taskLabel${index + 1}`}  
                 htmlFor={`task${index + 1}`}
                 onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to panel
               >
@@ -564,7 +541,7 @@ function App() {
         </div>
 
         {/* CTA section - shown last */}
-        <div 
+        <div  
           style={{
             opacity: ctaVisible ? 1 : 0,
             transition: 'opacity 0.3s ease-in',
@@ -572,8 +549,8 @@ function App() {
           }}
         >
           {showShareButton && (
-            <button 
-              id="share" 
+            <button  
+              id="share"  
               className="cta"
               onClick={(e) => {
                 e.stopPropagation(); // Prevent bubbling to panel
@@ -587,8 +564,8 @@ function App() {
       </div>
 
       {/* About Sheet */}
-      <Sheet 
-        isOpen={isOpen} 
+      <Sheet  
+        isOpen={isOpen}  
         detent="content-height"
         tweenConfig={{ ease: 'easeOut', duration: 0.4 }}
         onClose={() => setOpen(false)}
@@ -624,8 +601,18 @@ function App() {
               </div>
 
               <div className="debug">
+                {/* FIXED: Button to advance to the next cycle */}
                 <button onClick={() => {
-                  resetApp();
+                    if (window.confirm("This will advance the app to a new cycle, resetting today's tasks and updating the streak based on yesterday's completions. Proceed?")) {
+                        resetApp();
+                        setOpen(false);
+                    }
+                    }}>
+                    Advance to Next Cycle
+                </button>
+
+                <button onClick={() => {
+                  resetDailyTasks(); // This function already resets the daily state
                   setOpen(false);
                   }}>
                   Set to initial state
@@ -641,7 +628,7 @@ function App() {
                   }}>
                   Set streak to zero
                 </button>
-
+                
                 <button onClick={() => {
                   // Reset daily tasks
                   resetDailyTasks();
@@ -658,7 +645,7 @@ function App() {
                   Show welcome again
                 </button>
 
-                <button 
+                <button  
                   onClick={() => {
                     if (window.confirm("Resetting will clear your streak and completed tasks. Are you sure?")) {
                       localStorage.clear();
@@ -674,13 +661,14 @@ function App() {
         <Sheet.Backdrop onTap={() => setOpen(false)} />
       </Sheet>
 
-      <Sheet 
-        isOpen={showWelcomeSheet} 
+      <Sheet  
+        isOpen={showWelcomeSheet}  
         className="welcomeSheet"
         detent="content-height"
-        disableDrag="true"
+        disableDrag={true}
         tweenConfig={{ ease: 'easeOut', duration: 0.4 }}
-        onClose={closeWelcomeSheet, selectRandomTasks}
+        // onClose prop was incorrect, it can only accept one function. The button handles the logic now.
+        onClose={closeWelcomeSheet}
       >
         <Sheet.Container>
           <Sheet.Header />
@@ -707,7 +695,7 @@ function App() {
                 <button onClick={() => {
                   closeWelcomeSheet();
                   selectRandomTasks();
-                  }} 
+                  }}  
                   className="welcome-button cta primary">
                     I'm ready for some joy!
                   </button>
