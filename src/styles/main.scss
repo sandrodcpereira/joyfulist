@@ -149,6 +149,21 @@ header {
         line-height: 28px;
         margin: 0;
     }
+
+    .accent-container {
+        position: relative;
+
+        .accent {
+            position: absolute;
+            width: 58px;
+            height: 34px;
+            background-image: url(../../public/assets/accent.svg);
+            background-repeat: no-repeat;
+            background-size: contain;
+            top: -22px;
+            left: -60px;
+        }
+    }
 }
 
 .panel {

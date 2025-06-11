@@ -335,8 +335,8 @@ function App() {
   const shareJoy = () => {
     if (navigator.share) {
       navigator.share({
-        title: 'Hooopla',
-        text: `I'm on a ${streak}-day joy streak with Hooopla! My suggestions for today are: ${selectedTasks.join(' ')} What are yours?`,
+        title: 'Whoopla',
+        text: `I'm on a ${streak}-day joy streak with Whoopla! My suggestions for today are: ${selectedTasks.join(' ')} What are yours?`,
         url: window.location.href
       })
       .catch(error => console.log('Error sharing:', error));
@@ -434,7 +434,7 @@ function App() {
       }
 
       <div className="desktop-banner">
-        <p>Hooopla is optimised for smaller screens, but still functional on larger displays!</p>
+        <p>Whoopla is optimised for smaller screens, but still functional on larger displays!</p>
       </div>
 
       <header>
@@ -455,13 +455,16 @@ function App() {
       </header>
 
       <div className="logo-container">
+        <div class="accent-container">
+          <div class="accent"></div>
+        </div>
         <Sparkles  
           color="#FFC500"  
           count={5}  
           minSize={20}  
           maxSize={20}
         >
-          <h1>Hooopla</h1>
+          <h1>Whoopla!</h1>
         </Sparkles>
 
         <h2>Your daily dose of joy</h2>
@@ -575,14 +578,14 @@ function App() {
           <Sheet.Content>
             <div>
               <div className="header">
-                <p className="caption">About Hooopla</p>
+                <p className="caption">About Whoopla</p>
                 <div><button id="close-btn" onClick={() => setOpen(false)}>Close</button></div>
               </div>
 
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" id="hiddenToggle" onClick={toggleDebug} />
                 <p>
-                  <span>Hooopla</span> was created by <span>Clare</span> and <span><a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a></span> in hopes to bring a little more joy into your life.
+                  <span>Whoopla</span> was created by <span>Clare</span> and <span><a href="https://sandro.design" target="_blank" rel="noreferrer noopener">Sandro</a></span> in hopes to bring a little more joy into your life.
                 </p>
 
                 <p className="caption">All suggestions were written by us. Get in touch if you have any you'd like us to add!</p>
@@ -677,7 +680,7 @@ function App() {
               <div className="content">
                 <img src={`${process.env.PUBLIC_URL}/assets/sparkle.png`} alt="Sparkle" />
                 <p>
-                  Welcome to <span>Hooopla</span>!
+                  Welcome to <span>Whoopla</span>!
                 </p>
                 <p>Open the app every morning to get three suggestions for little things you can do to bring a bit of <span>joy</span> into your life.</p>
               </div>
