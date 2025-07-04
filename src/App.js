@@ -18,10 +18,6 @@ function App() {
   const [todayDate, setTodayDate] = useState('');
   const [tasksSelectedToday, setTasksSelectedToday] = useState(false);
   const [hasIncreasedStreakToday, setHasIncreasedStreakToday] = useState(false);
-
-  const soundTask = new Audio(`${process.env.PUBLIC_URL}/assets/sounds/do.mp3`);
-  const soundTaskUndo = new Audio(`${process.env.PUBLIC_URL}/assets/sounds/undo.mp3`);
-  const soundStreak = new Audio(`${process.env.PUBLIC_URL}/assets/sounds/pop.mp3`);
   
   // Welcome sheet state
   const [isFirstVisit, setIsFirstVisit] = useState(false);
@@ -53,7 +49,6 @@ function App() {
       // Trigger confetti when streak is updated
       handleStreakPop();
       setShowConfetti(true);
-      // soundStreak.play();
       
       // Reset confetti after animation
       setTimeout(() => {
@@ -527,20 +522,12 @@ function App() {
                   
                   // Update checked state
                   const newCheckedState = [...checkedState];
-                  const wasChecked = newCheckedState[index];
                   newCheckedState[index] = !newCheckedState[index];
                   setCheckedState(newCheckedState);
                   
-                  // Play appropriate sound effect
-                  if (!wasChecked) {
-                    // Task is being checked (ticked)
-                    //soundTask.currentTime = 0; // Reset to start in case it's already playing
-                    //soundTask.play().catch(error => console.log('Sound play failed:', error));
+                  // Only process completion if being checked
+                  if (!checkedState[index]) {
                     handleTaskCompletion(index);
-                  } else {
-                    // Task is being unchecked (unticked)
-                    //soundTaskUndo.currentTime = 0; // Reset to start in case it's already playing
-                    //soundTaskUndo.play().catch(error => console.log('Sound play failed:', error));
                   }
                 }}
                 onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to panel
